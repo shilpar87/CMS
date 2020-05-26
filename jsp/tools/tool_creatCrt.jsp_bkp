@@ -1,0 +1,335 @@
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1" %>
+<%@ taglib uri="/tags/struts-bean" prefix="bean" %>
+<%@ taglib uri="/tags/struts-html" prefix="html" %>
+<%@ taglib uri="/tags/struts-logic" prefix="logic" %>
+    
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<script type="text/javascript" >
+
+function validate(){
+var flg=true;
+if(document.getElementById('sigAlgorithm').value=='null'){
+alert(" Please select Signature Algorithm ");
+flg=false;
+}else if(document.getElementById('cert_validity').value=='null'){
+alert(" Please select Validity  ");
+flg=false;
+}else if(!echeck(document.getElementById('email').value)){
+flg=false;
+}
+return flg;
+}
+
+function echeck(str) {
+
+		var at="@"
+		var dot="."
+		var lat=str.indexOf(at)
+		var lstr=str.length
+		var ldot=str.indexOf(dot)
+		if (str.indexOf(at)==-1){
+		   alert("Invalid E-mail ID")
+		   return false
+		}
+
+		if (str.indexOf(at)==-1 || str.indexOf(at)==0 || str.indexOf(at)==lstr){
+		   alert("Invalid E-mail ID")
+		   return false
+		}
+
+		if (str.indexOf(dot)==-1 || str.indexOf(dot)==0 || str.indexOf(dot)==lstr){
+		    alert("Invalid E-mail ID")
+		    return false
+		}
+
+		 if (str.indexOf(at,(lat+1))!=-1){
+		    alert("Invalid E-mail ID")
+		    return false
+		 }
+
+		 if (str.substring(lat-1,lat)==dot || str.substring(lat+1,lat+2)==dot){
+		    alert("Invalid E-mail ID")
+		    return false
+		 }
+
+		 if (str.indexOf(dot,(lat+2))==-1){
+		    alert("Invalid E-mail ID")
+		    return false
+		 }
+
+		 if (str.indexOf(" ")!=-1){
+		    alert("Invalid E-mail ID")
+		    return false
+		 }
+
+ 		 return true
+	}
+
+function check(){
+if (document.getElementById('key').checked) {
+document.getElementById('pubKey').disabled=false;
+document.getElementById('priKey').disabled=false;
+}else{
+document.getElementById('pubKey').disabled=true;
+document.getElementById('priKey').disabled=true;
+}
+}
+var menu1=new Array()
+menu1[0]='<table width="200" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#999999"><tr><td bgcolor="#FFFFFF" class="Bluetxt" style="padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px"><div align="justify"><b>Export Certificate</b><br>.</div></td></tr></table>'
+var menu2=new Array()
+menu2[0]='<table width="200" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#999999"><tr><td bgcolor="#FFFFFF" class="Bluetxt" style="padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px"><div align="justify"><b>Renewal of a Certificate</b><br>.</div></td></tr></table>'
+var menu3=new Array()
+menu3[0]='<table width="200" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#999999"><tr><td bgcolor="#FFFFFF" class="Bluetxt" style="padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px"><div align="justify"><b>Update Certificate</b><br>.</div></td></tr></table>'
+var menu4=new Array()
+menu4[0]='<table width="200" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#999999"><tr><td bgcolor="#FFFFFF" class="Bluetxt" style="padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px"><div align="justify"><b>Change Status of Certificate</b><br></div></td></tr></table>'
+var menu5=new Array()
+menu5[0]='<table width="200" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#999999"><tr><td bgcolor="#FFFFFF" class="Bluetxt" style="padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px"><div align="justify"><b>Delete Certificate</b><br>.</div></td></tr></table>'
+		
+var menuwidth='200px' //default menu width
+var menubgcolor='#ffffff'  //menu bgcolor
+var disappeardelay=250  //menu disappear speed onMouseout (in miliseconds)
+var hidemenu_onclick="yes" //hide menu when user clicks within menu?
+
+var ie4=document.all
+var ns6=document.getElementById&&!document.all
+
+if (ie4||ns6)
+document.write('<div id="dropmenudiv" style="visibility:hidden;width:'+menuwidth+';background-color:'+menubgcolor+'" onMouseover="clearhidemenu()" onMouseout="dynamichide(event)"></div>')
+
+function getposOffset(what, offsettype){
+var totaloffset=(offsettype=="left")? what.offsetLeft : what.offsetTop;
+var parentEl=what.offsetParent;
+while (parentEl!=null){
+totaloffset=(offsettype=="left")? totaloffset+parentEl.offsetLeft : totaloffset+parentEl.offsetTop;
+parentEl=parentEl.offsetParent;
+}
+return totaloffset;
+}
+
+
+function showhide(obj, e, visible, hidden, menuwidth){
+if (ie4||ns6)
+dropmenuobj.style.left=dropmenuobj.style.top="-500px"
+if (menuwidth!=""){
+dropmenuobj.widthobj=dropmenuobj.style
+dropmenuobj.widthobj.width=menuwidth
+}
+if (e.type=="click" && obj.visibility==hidden || e.type=="mouseover")
+obj.visibility=visible
+else if (e.type=="click")
+obj.visibility=hidden
+}
+
+function iecompattest(){
+return (document.compatMode && document.compatMode!="BackCompat")? document.documentElement : document.body
+}
+
+function clearbrowseredge(obj, whichedge){
+	//alert("obj"+obj);
+	//alert("whichedge   "+whichedge);
+var edgeoffset=0
+if (whichedge=="rightedge"){
+var windowedge=ie4 && !window.opera? iecompattest().scrollLeft+iecompattest().clientWidth-15 : window.pageXOffset+window.innerWidth-15
+		//alert("windowedge"+windowedge);//1116
+//alert("dropmenuobj.offsetWidth"+dropmenuobj.offsetWidth);//93
+dropmenuobj.contentmeasure=dropmenuobj.offsetWidth
+if (windowedge-dropmenuobj.x < dropmenuobj.contentmeasure)
+edgeoffset=dropmenuobj.contentmeasure-obj.offsetWidth
+//alert("edgeoffset"+edgeoffset);//0
+}
+else{
+var topedge=ie4 && !window.opera? iecompattest().scrollTop : window.pageYOffset
+		//alert("topedge"+topedge);//0
+var windowedge=ie4 && !window.opera? iecompattest().scrollTop+iecompattest().clientHeight-15 : window.pageYOffset+window.innerHeight-18
+		//alert("windowedge"+windowedge);//640
+dropmenuobj.contentmeasure=dropmenuobj.offsetHeight
+//alert("dropmenuobj.offsetHeight "+dropmenuobj.offsetHeight)
+//alert(dropmenuobj.y);//405
+//alert("dropmenuobj.contentmeasure"+dropmenuobj.contentmeasure);//56
+//alert("windowedge-dropmenuobj.y"+windowedge-dropmenuobj.y);//235
+//alert("obj.offsetHeight  "+obj.offsetHeight);
+if (windowedge-dropmenuobj.y < dropmenuobj.contentmeasure){ //move up?
+edgeoffset=dropmenuobj.contentmeasure+obj.offsetHeight
+edgeoffset=dropmenuobj.contentmeasure+obj.offsetHeight
+//alert("edgeoffset in else"+edgeoffset);
+if ((dropmenuobj.y-topedge)<dropmenuobj.contentmeasure) //up no good either?
+edgeoffset=dropmenuobj.y+obj.offsetHeight-topedge
+
+}
+}
+return edgeoffset
+}
+
+function populatemenu(what){
+	//alert(what);
+if (ie4||ns6)
+dropmenuobj.innerHTML=what.join("")
+}
+
+
+function dropdownmenu(obj, e, menucontents, menuwidth){
+if (window.event) event.cancelBubble=true
+else if (e.stopPropagation) e.stopPropagation()
+clearhidemenu()
+dropmenuobj=document.getElementById? document.getElementById("dropmenudiv") : dropmenudiv
+populatemenu(menucontents)
+
+if (ie4||ns6){
+showhide(dropmenuobj.style, e, "visible", "hidden", menuwidth)
+dropmenuobj.x=getposOffset(obj, "left")
+//alert("dropmenuobj.x in func"+dropmenuobj.x);//158
+dropmenuobj.y=getposOffset(obj, "top")
+//alert("dropmenuobj.y in func"+dropmenuobj.y);//405
+//alert("dropmenuobj.x-clearbrowseredge"+dropmenuobj.x-clearbrowseredge(obj, "rightedge"))
+var a = (dropmenuobj.y-clearbrowseredge(obj, "bottomedge")+obj.offsetHeight)-300;
+dropmenuobj.style.left= dropmenuobj.x-clearbrowseredge(obj, "rightedge")+"px"
+//alert("dropmenuobj.y "+dropmenuobj.y);
+dropmenuobj.style.top= (dropmenuobj.y-clearbrowseredge(obj, "bottomedge")+obj.offsetHeight)-100 +"px"
+}
+
+
+return clickreturnvalue()
+}
+
+function clickreturnvalue(){
+if (ie4||ns6) return false
+else return true
+}
+
+function contains_ns6(a, b) {
+while (b.parentNode)
+if ((b = b.parentNode) == a)
+return true;
+return false;
+}
+
+function dynamichide(e){
+if (ie4&&!dropmenuobj.contains(e.toElement))
+delayhidemenu()
+else if (ns6&&e.currentTarget!= e.relatedTarget&& !contains_ns6(e.currentTarget, e.relatedTarget))
+delayhidemenu()
+}
+
+function hidemenu(e){
+if (typeof dropmenuobj!="undefined"){
+if (ie4||ns6)
+dropmenuobj.style.visibility="hidden"
+}
+}
+
+function delayhidemenu(){
+if (ie4||ns6)
+delayhide=setTimeout("hidemenu()",disappeardelay)
+}
+
+function clearhidemenu(){
+	if (typeof delayhide!="undefined")
+	clearTimeout(delayhide)
+}
+
+if (hidemenu_onclick=="yes")
+document.onclick=hidemenu
+
+
+</script>
+
+<html:html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Create Certificate</title>
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath() %>/css/style.css" />
+</head>
+
+<body >
+	<html:form action="/CMSToolAction.do?methodToCall=creatSSCrt"> 
+	<table border="0" align="center" cellpadding="0" cellspacing="0" width="40%"  bordercolor="#000000">
+	<tr>
+		<td align="center" valign="top" ><b><font size="3" color="004488"> CREATE NEW CERTIFICATE </font></b></td> 
+    </tr>
+ 	</table><br>
+	<div style="width:700px; height:9px" >
+	<table  width ="70%" cellspacing="1" cellpadding="1" border="0">
+
+	<tr bgcolor="DFECFF" >  
+		<td align="right"><font size="2" color=" 004488" >Signature Algorithm * :</td>	
+		<td align="left" width="" height="30"> 
+			<select name="sigAlgorithm" size="1" style="font-size: 1.05em;">
+			<option value="null" selected>Select...</option>
+			<option value="RSA">RSA</option>
+			<option value="DSA">DSA</option>
+			
+			</select> 
+		</td>
+	</tr>	
+	<tr bgcolor="D2E8FF" >  
+		<td align="right"><font size="2" color=" 004488" >Validity (days) * :</td>	
+		<td align="left" width="" height="30"> 
+			<select name="cert_validity" size="1" style="font-size: 1.05em;">
+			<option value="null" selected>Select...</option>
+			<option value="365">365</option>
+			<option value="730">730</option>
+			</select> 
+		</td>
+	</tr>
+	<tr bgcolor="DFECFF">
+		<td align="right" ><font size="2" color=" 004488" >Common Name (CN) : </td>
+		<td align="left" width="" height="30"> <input type="text" onclick = "dropdownmenu(this, event, menu2, '200px')" size="42"  name="comName"> </td>
+	</tr>
+	<tr bgcolor="D2E8FF">
+		<td align="right" ><font size="2" color=" 004488" >Organizational Unit (OU) : </td>
+		<td align="left" width="" height="30"> <input type="text" size="42" wrap="off"  name="orgUnit" > </td>
+	</tr>
+	<tr bgcolor="DFECFF">
+		<td align="right" ><font size="2" color=" 004488" >Organizational Name (ON) : </td>
+		<td align="left" width="" height="30"> <input type="text" size="42" name="orgName"> </td>
+	</tr>
+		<tr bgcolor="D2E8FF">
+		<td align="right" ><font size="2" color=" 004488" >Locality Name (LN) : </td>
+		<td align="left" width="" height="30"> <input type="text" size="42" name="locName"> </td>
+	</tr>
+		<tr bgcolor="DFECFF">
+		<td align="right" ><font size="2" color=" 004488" >State Name (SN) : </td>
+		<td align="left" width="" height="30"> <input type="text" size="42" name="state"> </td>
+	</tr>
+		<tr bgcolor="D2E8FF">
+		<td align="right" ><font size="2" color=" 004488" >Country (C) : </td>
+		<td align="left" width="" height="30"> <input type="text" size="42" name="country"> </td>
+	</tr>
+	
+		<tr bgcolor="DFECFF">
+		<td align="right" ><font size="2" color=" 004488" >Email (E) : </td>
+		<td align="left" width="" height="30"> <input type="text" size="42" name="email"> </td>
+	</tr>
+	<tr bgcolor="D2E8FF">
+		<td align="center" ><font size="2" color=" 004488" >Use My Key Pair</font> <input type="checkbox" name="key" value="" onclick="check();" /></td>
+		<td align="right" ><font size="2" color=" 004488" ></td>
+	</tr>
+	<tr bgcolor="DFECFF">
+		<td align="right" ><font size="2" color=" 004488" >Public Key :</td>
+		<td align="left" width="" height="30"> <input type="text" size="42" name="pubKey"  disabled="disabled"> </td>
+	</tr>
+	<tr bgcolor="DFECFF">
+		<td align="right" ><font size="2" color=" 004488" >Private Key :</td>
+		<td align="left" width="" height="30"> <input type="text" size="42" name="priKey"  disabled="disabled"> </td>
+	</tr>
+ 	</table>
+	<table>
+	<tr>
+		<td>&nbsp</td>
+		<td>&nbsp</td>
+				<td>&nbsp</td>
+		
+		<td> 
+		<input type="submit" value="Create"  style="font-size: 1.05em; padding: 0.05em;" onClick="return validate();" name="Create"></td>
+		<td> &nbsp</td>
+		<td> <html:reset value="Reset" style="font-size: 1.05em; padding: 0.05em;"></html:reset></td>
+	</tr>
+	</table>
+	<tr><td>&nbsp</td><td>&nbsp</td></tr>
+	<tr><td>&nbsp</td><td>&nbsp</td></tr>
+	</html:form>
+</body>
+</html:html>

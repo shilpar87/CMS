@@ -1,0 +1,7 @@
+#*/10 * * * * com.mail.RmsMail
+#* * * * * com.cron.TestCron
+#35 16 */1 * * com.qwest.cms.cron.TestCron
+#7:00 on tue,wed,thu,fri,sat 
+#0 7 * * 2,3,4,5,6 com.mail.RmsMail
+#* * * * * com.qwest.cms.cron.TestCron
+#* * * * * com.qwest.cms.cron.AllCertsCron

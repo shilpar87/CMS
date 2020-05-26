@@ -1,0 +1,1979 @@
+/*
+ * Created on Feb 20, 2008
+ *
+ * TODO To change the template for this generated file go to
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
+package com.qwest.cms.action;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+import org.apache.log4j.Logger;
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
+import org.apache.struts.actions.DispatchAction;
+import org.apache.struts.util.MessageResources;
+import org.apache.xerces.impl.xpath.regex.ParseException;
+
+import com.qwest.cms.BO.CMSBO;
+import com.qwest.cms.actionForm.CMSFormBean;
+import com.qwest.cms.dao.GenericDAO;
+import com.qwest.cms.dao.SearchDAO;
+import com.qwest.cms.exception.CMSBaseException;
+import com.qwest.cms.utils.CMSProperties;
+import com.qwest.cms.utils.CmsMail;
+import com.qwest.cms.utils.CmsToolUtil;
+
+
+/**
+ * @author ipatan
+ *
+ * TODO To change the template for this generated type comment go to
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
+public class CMSAction extends  DispatchAction {
+	Logger logger = Logger.getLogger(CMSAction.class);
+	ActionErrors actionErrors = new ActionErrors();
+    
+   	public ActionForward home(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {
+		  System.out.println("I am here==check in setUp=");
+		/* System.out.println("I am here==check in setUp=" + methodToCall);
+						 if(transfer.equals(methodToCall)){
+				 System.out.println("I am not ");
+				 actionForward="transfer";
+			 }*/
+		  	  
+			  return mapping.findForward("home");
+			 }
+   	
+	public ActionForward tool(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {
+
+			  System.out.println("tool calling");
+			  return mapping.findForward("tool");
+			 }
+	
+	public ActionForward keyform(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {
+
+			  System.out.println("creat Pvt key calling");
+			  return mapping.findForward("keyform");
+			 }
+	
+	public ActionForward csrform(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {
+
+			  System.out.println("creat Pvt key calling");
+			  return mapping.findForward("csrform");
+			 }
+	
+	public ActionForward viewCsr(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {
+
+			  System.out.println("creat Pvt key calling");
+			  return mapping.findForward("viewCsr");
+			 }
+	
+	public ActionForward viewPubKey(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {
+
+			  System.out.println("creat Pvt key calling");
+			  return mapping.findForward("viewPubKey");
+			 }
+	
+	public ActionForward creatNewCsr(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {
+
+			  System.out.println("creat Pvt key calling");
+			  return mapping.findForward("creatNewCsr");
+			 }
+	public ActionForward impPvtKey(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {
+
+			  System.out.println("creat Pvt key calling");
+			  return mapping.findForward("impPvtKey");
+			 }
+	public ActionForward AutoDisc(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {
+
+			  System.out.println("creat Pvt key calling");
+			  System.out.println("testing");
+			  return mapping.findForward("AutoDisc");
+			 }
+	public ActionForward status(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			 
+			  System.out.println("I am here== status=");
+			  logger.info("CMS Action -- Status ***************");
+			  logger.debug("Hi---------> , inside status");
+			  HttpSession session = request.getSession();
+			  session.setAttribute("pageToCall","status");		
+			  return mapping.findForward("home");
+			 }
+	public ActionForward details(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			 
+			  System.out.println("I am here== status=");
+			  logger.info("CMS Action -- Details ***************");
+			  HttpSession session = request.getSession();
+			  session.setAttribute("pageToCall","details");		
+			  return mapping.findForward("home");
+			 }
+	public ActionForward summary(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			 
+			  System.out.println("I am here== status=");
+			  logger.info("CMS Action -- Summary ***************");
+			  HttpSession session = request.getSession();
+			  session.setAttribute("pageToCall","summary");		
+			  return mapping.findForward("home");
+			 }
+	public ActionForward history(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			 
+		  System.out.println("I am here== history=");
+		  logger.info("CMS Action -- History ***************");
+		  try {
+			  actionErrors.clear();
+			  HttpSession session = request.getSession();
+			  session.setAttribute("pageToCall","history");	
+			  System.out.println("checked value:::::::::::::"+ session.getAttribute("checkedRadioValue").toString());
+			  String history_query=CMSProperties.getString("history_query") + session.getAttribute("checkedRadioValue").toString();
+			  System.out.println("Inside History: Query is-->"+history_query );
+			  
+			  GenericDAO genericDAO = new GenericDAO();
+			  ArrayList historyList = new ArrayList();
+			  ArrayList historyList1 = new ArrayList();//(ArrayList)genericDAO.getData("");
+			  historyList1=genericDAO.getHistList(history_query.toString());
+			  System.out.println("List extracted for History");
+			  logger.debug("List extracted for History");
+			  int i = historyList1.size();
+			  System.out.println("No. of records in history "+i);
+			  logger.debug("No. of records in history "+i);
+			  for( i=0;i<historyList1.size();i++) {
+					String[] strArr = (String[])historyList1.get(i);
+					
+					CMSBO cms = new CMSBO();
+					
+					cms.setModifiedDate(strArr[0]);
+					cms.setModifiedCuid(strArr[1]);
+					cms.setModifiedAction(strArr[2]);
+					
+					System.out.println(strArr[0]);
+					System.out.println(strArr[1]);
+					System.out.println(strArr[2]);
+					historyList.add(cms);
+					
+						
+				}
+			  session.setAttribute("historyList", historyList);
+			  
+			  return mapping.findForward("home");
+		  }  catch (SQLException e) {
+				logger.error("SQL Exception in History "+e.getMessage());
+				actionErrors.add("db error", new ActionError("error.dbError"));
+				saveErrors(request, actionErrors);
+				return mapping.findForward("editProfAuthCheck");
+			}catch (Exception e) {
+				logger.error("Exception in History "+e.getMessage());
+				actionErrors.add("error", new ActionError("error.request"));
+				saveErrors(request, actionErrors);
+				return mapping.findForward("editProfAuthCheck");
+			}
+		  
+		 }
+	
+	public ActionForward notes(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			 
+			  System.out.println("I am here== status=");
+			  logger.info("CMS Action -- Notes ***************");
+			  HttpSession session = request.getSession();
+			  session.setAttribute("pageToCall","notes");		
+			  return mapping.findForward("home");
+			 }
+	public ActionForward Functions(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			 
+			System.out.println("Functions TAB <><><><><>");
+			logger.info("CMS Action -- Functions TAB ***************");
+			HttpSession session = request.getSession();
+//			GenericDAO genDAO = new GenericDAO();
+//		 	String certSeqNo = (String)session.getAttribute("checkedRadioValue");
+//			String certStatus= genDAO.getCertStatus(certSeqNo);
+//			session.setAttribute("certStatus", certStatus);
+			session.setAttribute("pageToCall","functions");		
+			return mapping.findForward("home");
+			 }
+	
+	public ActionForward edit_profile(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			 
+			  logger.info("CMS Action -- Edit Profile ***************");
+			  HttpSession session = request.getSession();
+			  actionErrors.clear();
+			  session.removeAttribute("groupList") ;
+			  session.removeAttribute("groupListSize");
+			  try {
+				  HashMap appHash = new HashMap();
+				  GenericDAO genDao = new GenericDAO();
+				  ArrayList appAllList = new ArrayList();
+				  ServletContext context =servlet.getServletContext();
+				  ArrayList sortedList = new ArrayList();
+				  //  appList1 = (ArrayList)genDao.getGroupList("select APPLICATION_NAME, ACRONYM from TBL_CMS_MAL");
+			 	  if ( context.getAttribute("appAllList") == null ){
+			 		  System.out.println("SETTING context ....... null");
+			 		  appHash = (HashMap)genDao.getGroupList("select APPLICATION_NAME, ACRONYM from TBL_CMS_MAL order by APPLICATION_NAME");
+				 	  
+					  Set set = appHash.keySet();
+					  
+			          Iterator setItr = set.iterator();
+			          while (setItr.hasNext()) {
+			        	  sortedList.add(setItr.next());
+			          }
+			          java.util.Collections.sort(sortedList);
+			          
+			          Iterator it = sortedList.iterator();
+					  while (it.hasNext()) {
+				          /*  Map.Entry entry = (Map.Entry) it.next();
+				            //System.out.println(entry.getKey() + " : " + entry.getValue());
+				            CMSBO bo = new CMSBO();
+							//System.out.println("str arr"+strArr.toString());
+							bo.setAppName(entry.getKey().toString());
+							bo.setAcronym(entry.getValue().toString());*/
+						  CMSBO bo = new CMSBO();
+						 String key= it.next().toString();
+							bo.setAppName(key);
+							bo.setAcronym(appHash.get(key).toString());
+							appAllList.add(bo);
+				          }
+					  /*for( int i=0; i<appList1.size();i++) {
+							String[] strArr = (String[])appList1.get(i); 
+							CMSBO bo = new CMSBO();
+							//System.out.println("str arr"+strArr.toString());
+							bo.setAppName(strArr[0]);
+							bo.setAcronym(strArr[1]);
+							appList.add(bo);
+					  }*/
+					  context.setAttribute("appAllList",appAllList);
+					  
+					  
+			 	  }		  
+				  return mapping.findForward("edit_profile");
+			  }  catch (SQLException e) {
+					logger.error("SQL Exception in Edit_Profile "+e.getMessage());
+					actionErrors.add("db error", new ActionError("error.dbError"));
+					saveErrors(request, actionErrors);
+					return mapping.findForward("editProfAuthCheck");
+				}catch (Exception e) {
+					logger.error("Exception in Edit_Profile "+e.getMessage());
+					actionErrors.add("error", new ActionError("error.request"));
+					saveErrors(request, actionErrors);
+					return mapping.findForward("editProfAuthCheck");
+			  }			  
+	} 
+	
+	public ActionForward deleteGroup(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			 
+			  logger.info("CMS Action -- Edit Prof - DeleteGroup ***************");
+			  HttpSession session = request.getSession();
+			  actionErrors.clear();
+			  CMSFormBean cmsForm = (CMSFormBean)form; 
+			  GenericDAO genDao  = new GenericDAO();
+			  boolean deleted = false;
+			  HashMap groupHash = new HashMap();
+			  HashMap newGroupHash = new HashMap();
+			  try {
+				  String selectedApp = request.getParameter("selectGroup");
+				  String selelctedAcronym = request.getParameter("selAcronym");
+				  System.out.println("inside ********* deleteGroup ********");
+				  System.out.println("%%%%%%%%%%%%%%%%%%% Selected app and acronym......"+selectedApp+selelctedAcronym);
+				  session.getAttribute("groupList");
+				  deleted = genDao.deleteAppDAO(selectedApp, selelctedAcronym);			  
+				  cmsForm.setAppName(selectedApp);
+				  cmsForm.setAcronym(selelctedAcronym);
+				  if ( deleted){
+					  groupHash = (HashMap)session.getAttribute("appHash");
+					  groupHash.remove(selectedApp);
+					  session.setAttribute("appHash",groupHash);
+				  }
+				  editProfile(mapping, form, request, response);
+				  
+				  return mapping.findForward("edit_profile");
+			  }  catch (SQLException e) {
+					logger.error("SQL Exception in Delete Group "+e.getMessage());
+					actionErrors.add("db error", new ActionError("error.dbError"));
+					saveErrors(request, actionErrors);
+					return mapping.findForward("editProfAuthCheck");
+				}catch (Exception e) {
+					logger.error("Exception in Delete Group "+e.getMessage());
+					actionErrors.add("error", new ActionError("error.request"));
+					saveErrors(request, actionErrors);
+					return mapping.findForward("editProfAuthCheck");
+			  }
+			  
+	} 
+	
+	public static void remindAlaram(){
+	    try{
+	        String manAlrm="";
+	        String autoAlr="";
+	        CmsMail cmsmail=new CmsMail();
+	        ArrayList autList = new ArrayList();
+	        HashSet ownerSet=new HashSet();
+	        CmsToolUtil  toolUtil=new CmsToolUtil();
+	        ArrayList manulList = new ArrayList();
+	        autList=new GenericDAO().reminder_app("SELECT b.OWNER_CUID,b.MANAGER_CUID,a.HOST_ID,a.APPLICATION_ID,a.ISSUER,a.ISSUER_CN,a.SERIAL_NO,a.EXPIRE_ON FROM VW_CMS_ALRM_NOTIFY a , CERT_AUTO_ALARM b WHERE a.HOST_ID=b.HOST_ID AND a.APPLICATION_ID=b.APP_CUID");
+	        manulList=new GenericDAO().reminder_app("SELECT 1,1,a.HOST_ID,a.APPLICATION_ID,a.ISSUER,a.ISSUER_CN,a.SERIAL_NO,a.EXPIRE_ON FROM VW_CMS_ALRM_NOTIFY a , CERT_MANUAL_ALARM b WHERE a.APPLICATION_ID=b.APP_CUID AND a.HOST_ID=b.HOST_ID");
+	        for(int i=0;i<autList.size();i++) {
+	            String[] strArr = (String[])autList.get(i);
+	            ownerSet.add(strArr[0]);
+	         }
+	        Iterator itr=ownerSet.iterator();
+	        while(itr.hasNext()){
+	            String owner=(String)itr.next();
+	            String autoOwnAlr="";
+	            String mgrOwn="";
+	        for(int i=0;i<autList.size();i++){
+	            String[] strArr = (String[])autList.get(i);
+	            mgrOwn=strArr[1];
+	            if(owner.equals(strArr[0])){
+	                autoOwnAlr=autoOwnAlr+strArr[2]+","+strArr[3]+","+strArr[4]+","+strArr[5]+","+strArr[6]+","+strArr[7]+"\n";
+	            }
+	        }
+	        toolUtil.writeFile(new File(CMSProperties.getString("autoAlr")), autoOwnAlr);
+	        String body="HI "+owner+", Please find atached list of certificates which are expiring Soon "
+		        +"\n\n\n\n Please do the needful."
+		        +"\n\n\n\n\n\n This is an auto-generated mail.Please donot reply."
+		        +"\n\n\n Link for CMS tool: http://suomd72i.dev.qintra.com:7777/cms/";
+	        String[] ccList={mgrOwn,CMSProperties.getString("autoAlaramCCList")};
+	        cmsmail.sendMessWithAttach("Reminder mail for Certificates going to expire", body, "cmsAdmin", owner, ccList,CMSProperties.getString("autoAlr"));
+	        }
+			
+			for(int i=0;i<manulList.size();i++) {
+			    String[] strArr = (String[])manulList.get(i);
+			    manAlrm=manAlrm+strArr[2]+","+strArr[3]+","+strArr[4]+","+strArr[5]+","+strArr[6]+","+strArr[7]+"\n";
+			 
+			}
+			
+			toolUtil.writeFile(new File(CMSProperties.getString("manlAlr")), manAlrm);
+			if(manulList.size()>0){
+			    String[] toList=CMSProperties.getString("autoAlaramCCList").split(",");
+			    String body="HI , Please find atached list of certificates which are expiring Soon "
+			        +"\n\n\n\n Please do the needful."
+			        +"\n\n\n\n\n\n This is an auto-generated mail.Please donot reply."
+			        +"\n\n\n Link for CMS tool: http://suomd72i.dev.qintra.com:7777/cms/";
+			    cmsmail.sendMessWithAttach("Reminder mail for Certificates going to expire", body, "cmsAdmin", toList[0], toList,CMSProperties.getString("manlAlr"));
+			}
+			
+			
+	    }catch (Exception e) {
+	        System.out.println("SQL Exception in Delete Group "+e.getMessage());
+		}
+	    
+	}
+	
+	public static void Reminder_querybk() {
+			
+		try{			
+			String query="select A.APPLICATION_NAME ,A.ACRONYM ,B.RCBS_MGR_CUID ,A.CERT_NICKNAME ,A.ISSUER ,A.SERIAL_NO ,A.EXPIRE_ON from VW_CMS_ALRM_NOTIFY A ,TBL_CMS_APP_OWNER B where A.APPLICATION_NAME =B.APPLICATION_NAME ANd A.ACRONYM =B.ACRONYM";
+			
+			GenericDAO genericDAO = new GenericDAO();
+			ArrayList appList = new ArrayList();
+			appList=genericDAO.reminder_app(query);
+			System.out.println("List extracted for reminder mails");
+			
+			int i = appList.size();
+			System.out.println("No. of records "+i);
+				     
+			for( i=0;i<appList.size();i++) {
+				String[] strArr = (String[])appList.get(i);
+				System.out.println("rcbs mgr cuid"+ strArr[2]);
+				System.out.println("expires on "+ strArr[6]);
+				String mem_query="select A.MEMBER_CUID from TBL_CMS_APP_MEMBER A where A.APPLICATION_NAME ='" +strArr[0]+ "' ANd A.ACRONYM ='"+strArr[1]+"'";
+				System.out.println(mem_query);
+				ArrayList memArray=genericDAO.memList(mem_query);
+				String[] membList=new String[memArray.size()];
+				for (int j=0;j < membList.length;j++)
+				{
+					membList[j]= memArray.get(j).toString();
+					System.out.println("array elements-->"+membList[j]);
+				}				
+				
+				CmsMail cmsmail=new CmsMail();
+				String sub="Reminder mail for the Certificate going to expire on  "+ strArr[6];
+				String body="Hi,\n\n\n The following certificate is going to expire on "+ strArr[6]
+				+"\n\n Application Name:  " + strArr[0]
+				+"\n\n Acronym:  " + strArr[1]
+				+"\n\n Certificate Nick Name:  " + strArr[3]
+				+"\n\n\n\n Please do the needful."
+				+"\n\n\n\n\n\n This is an auto-generated mail.Please donot reply.";
+				String[] toList = membList;
+				String cc=strArr[2];
+				String from="cmsAdmin@qwest.com";
+				
+				
+				cmsmail.sendMessage(sub,body,from,toList,cc);
+				/*String to = "jjena";
+				cmsmail.sendMessage(sub,body,from,to);*/
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	public void checkAuth(ActionMapping mapping,
+		   ActionForm form, HttpServletRequest request,
+		   HttpServletResponse response)throws Exception{
+		HttpSession session=request.getSession();
+		ArrayList list=(ArrayList)session.getAttribute("appAuthList");
+		
+		PrintWriter out=response.getWriter();
+		String appName=request.getParameter("selAppName").toString();
+		String acrName=request.getParameter("selAcronym").toString();
+		System.out.println(" in the ajax call of check Auth "+request.getParameter("selectGroup")+"  ");
+     
+		Iterator ir=list.iterator();
+		boolean flg=true;
+		while(ir.hasNext()){
+			CMSBO bo=(CMSBO)ir.next();
+			System.out.println(" app in map == "+appName+" app of request "+acrName+" Bo valued \n "+bo.getAppName()+" "+bo.getAcronym()+" "+bo.getAuthType());
+			if(bo.getAppName().equals(appName)){
+              if(bo.getAcronym().equals(acrName)){
+                  flg=false;
+                  out.write(bo.getAuthType());
+              }
+			}
+         }
+		 if(flg){
+			 //String result=new GenericDAO().checkAuth(,request.getParameter("selAcronym").toString(),session.getAttribute("login").toString());
+    
+			 out.write("");
+		 }
+      
+	}
+
+	public ActionForward editProfile(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {
+		
+		try {
+			  logger.info("CMS Action -- Edit Prof ***************");
+			  MessageResources messageResources = getResources(request); 
+			  ActionMessages actionMessages = new ActionMessages();
+			  actionErrors.clear();
+			  CMSFormBean cmsForm = (CMSFormBean)form; 
+			  String AppName = cmsForm.getAppName();		  
+			  String Acronym = cmsForm.getAcronym();
+			  String rcbsCode = cmsForm.getRcbsCode();
+			  String rcbsMgrCuid = cmsForm.getRcbsMgrCuid();
+			  String alarmTime = cmsForm.getAlarmTime();
+			  String alarmFreq = cmsForm.getAlarmFreq();
+			  HttpSession session = request.getSession();
+			  String cuid = (String) session.getAttribute("login");
+			  if ( (cuid == null) || (cuid.equals(null) || (cuid.equals(""))) ){
+				  logger.error("Login Id in Edit Prof is null");
+				  actionErrors.add("errMess", new ActionError("error.message"));
+				  saveErrors(request, actionErrors);				  
+				  return mapping.findForward("editProfAuthCheck");
+			  }
+			  System.out.println("Creator CUID in Action class --- "+cuid);
+			  logger.debug("CMS Action -- Edit Prof - Creator CUID - "+cuid);
+			  GenericDAO dao = new GenericDAO();
+			  
+			  ArrayList groupList = new ArrayList();
+			 // ArrayList groupList1 = new ArrayList();
+			  HashMap hashGroup = new HashMap();
+			  GenericDAO genDao=new GenericDAO();
+			  int groupListSize;
+			  String groupNameString = null;
+			  String groupSelectString = null;
+			  String  groupName = null;
+			  System.out.println("IN EDIT PROFILE ****************   ");
+			  String operator = null;
+			  //StringBuffer searchGroupQuery = new StringBuffer("SELECT m.APPLICATION_NAME, m.ACRONYM from TBL_CMS_APP_OWNER m where m.APPLICATION_NAME ");
+			  String searchGroupQuery = "SELECT m.APPLICATION_NAME, m.ACRONYM from TBL_CMS_APP_OWNER m ";
+			  groupSelectString = cmsForm.getSelectGroupName();
+			  System.out.println("****** groupSelectString ******"+groupSelectString);
+			  logger.debug("CMS Action -- Edit Prof - Selected Group"+groupSelectString);
+			  groupNameString = cmsForm.getGroupString().toUpperCase();
+			  System.out.println("IN EDIT PROFILE ... Group name select and string"+groupSelectString+"  "+groupNameString);
+			  
+			  
+			  ArrayList appGroupList = new ArrayList(); 
+			  HashMap appHash = new HashMap();
+//			  ServletContext context =servlet.getServletContext();
+			  
+			  if ( session.getAttribute("appHash") == null ){
+		 		  System.out.println("SETTING application context ....... null");
+		 		 appHash = (HashMap)genDao.getGroupList(searchGroupQuery);
+				 				 
+		 		session.setAttribute("appHash",appHash);				  
+		 	  }else{
+		 	      appHash = (HashMap) session.getAttribute("appHash");
+		 	  }		 		      	      
+		      Set appSet = appHash.keySet();
+		      Iterator ir = appSet.iterator();
+		       
+		      if( (groupNameString.equals("")) ){
+				  System.out.println("Group string is null");
+				  logger.debug("CMS Action -EDIT PROFILE ---- Group Search Criteria not provided ");
+				  actionMessages.add("mess", new ActionMessage("message.groupNull"));
+				  saveMessages(request, actionMessages);
+			  }else{
+				  if ( groupSelectString.equals("Starts With" ) ){
+					  System.out.println("IN starts with .....");
+							  while(ir.hasNext()){
+								  groupName =(String)ir.next();
+								  System.out.println("While groupname is ......... "+groupName+"     "+groupNameString.toUpperCase());
+						          if(groupName.toUpperCase().startsWith(groupNameString.toUpperCase())){
+						        	  System.out.println("grp name starts with "+groupSelectString);
+						        	  appGroupList.add(groupName) ;
+						          }						 
+							  }
+				  }else if(groupSelectString.equals("Contains") ) {
+					  System.out.println("IN Contains .....");
+					    	  while(ir.hasNext()){
+					    		  groupName =(String)ir.next();
+						          if(groupName.toUpperCase().indexOf((groupNameString.toUpperCase()))!=-1){
+						        	  System.out.println("grp name contains with "+groupSelectString);
+						        	  appGroupList.add(groupName) ;
+						          }
+					          }				    	  
+				  }else if ( groupSelectString.equals("Is Exactly" )){
+					  System.out.println("IN is exactly .....");
+					    	  while(ir.hasNext()){
+					    		  groupName =(String)ir.next();
+						          if(groupName.toUpperCase().equals(groupNameString.toUpperCase())){
+						        	  System.out.println("grp name equals with "+groupSelectString);
+						        	  appGroupList.add(groupName) ;
+						          }
+					    	  }				    	  
+				  }		   	
+				  System.out.println("Search Group Query is ......"+searchGroupQuery.toString());		  
+				  
+					 // groupList1 = (HashMap) genDao.getGroupList(searchGroupQuery.toString());
+				  if ( appGroupList.size() == 0 ){
+						 
+					  actionMessages.add("mess", new ActionMessage("message.noMatch"));
+					  saveMessages(request, actionMessages);
+				  }else{
+						  for (int i = 0; i < appGroupList.size(); i++) {
+							  	CMSBO bo = new CMSBO();
+								//System.out.println("str arr"+strArr.toString());
+								bo.setAppName((String)appGroupList.get(i));
+								bo.setAcronym((String)appHash.get((String)appGroupList.get(i)));
+								groupList.add(bo);
+								
+						}
+				  }	  
+				  logger.debug("CMS Action -EDIT PROFILE -- No of Records for Group search is .... "+appGroupList.size());
+				  
+				  groupListSize = groupList.size();
+				  System.out.println("Edit Profile**********"+request.getParameter("selectGroup"));
+				  ArrayList list=(ArrayList)genDao.getAppAuth(cuid);
+				  session.setAttribute("appAuthList",list);
+				  System.out.println("Group list size is >>>>>>>>>"+groupList.size());
+				  session.setAttribute("groupList",groupList);
+				  session.setAttribute("groupListSize", new Integer(groupListSize));			  
+				  
+			  }
+		      return mapping.findForward("edit_profile");  
+/*			 if( (groupNameString.equals("")) ){
+				  System.out.println("Group string is null");
+				  logger.debug("CMS Action -EDIT PROFILE ---- Group Search Criteria not provided ");
+				  actionMessages.add("mess", new ActionMessage("message.groupNull"));
+				  saveMessages(request, actionMessages);
+			  }
+			  else{
+				  if ( groupSelectString.equals("Starts With" ) ){					  
+					  operator = "like '";
+					  searchGroupQuery.append(operator+groupNameString+"%'");
+					  System.out.println("operator is starts with "+searchGroupQuery);
+				  }
+				  else if(groupSelectString.equals("Contains") ) {
+					  operator = "like '";
+					  searchGroupQuery.append(operator+"%"+groupNameString+"%'");
+					  System.out.println("operator is contains "+searchGroupQuery);
+				  }
+				  else if ( groupSelectString.equals("Is Exactly" )){
+					  operator = "= '";
+					  searchGroupQuery.append(operator+groupNameString+"'");
+					  System.out.println("operator is exactly "+searchGroupQuery);
+				  }*/
+
+				  
+				/*  
+				  hashGroup = (HashMap) genDao.getGroupList(searchGroupQuery.toString());
+				 // int i = groupList1.size();
+				  int i = hashGroup.size();
+				  if ( i == 0 ){
+					  System.out.println("Records extracted-->  "+i);
+					  actionMessages.add("mess", new ActionMessage("message.noMatch"));
+					  saveMessages(request, actionMessages);
+				  }
+				  System.out.println("No. of records extracted-->  "+i);*/
+				  
+			  	 			     
+			      
+			  
+			  /*
+				  Set set = hashGroup.entrySet();
+		          Iterator it = set.iterator();
+		          while (it.hasNext()) {
+		            Map.Entry entry = (Map.Entry) it.next();
+		            //System.out.println(entry.getKey() + " : " + entry.getValue());
+		            CMSBO bo = new CMSBO();
+					//System.out.println("str arr"+strArr.toString());
+					bo.setAppName(entry.getKey().toString());
+					bo.setAcronym(entry.getValue().toString());
+					groupList.add(bo);
+		          }*/
+				/*  for(	 i=0;i<hashGroup.size();i++) {
+						String[] strArr = (String[])groupList1.get(i); 
+						CMSBO bo = new CMSBO();
+						System.out.println("str arr"+strArr.toString());
+						bo.setAppName(strArr[0]);
+						bo.setAcronym(strArr[1]);
+						groupList.add(bo);
+				  }*/
+				  
+		} catch (SQLException e) {
+			logger.error("SQL Exception in Edit Prof  "+e.getMessage());
+			actionErrors.add("errMess", new ActionError("error.dbError"));
+			saveErrors(request, actionErrors);
+			System.out.println("action error is .... "+actionErrors.get().toString());
+			return mapping.findForward("editProfAuthCheck");
+		}catch (Exception e) {
+			logger.error("Exception in Edit Prof "+e.getMessage());
+			actionErrors.add("errMess", new ActionError("error.message"));
+			saveErrors(request, actionErrors);
+			System.out.println("action error is .... "+actionErrors.get().toString());
+			return mapping.findForward("editProfAuthCheck");
+		}
+		  
+	}
+	
+	public ActionForward editProfAcronym(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {
+		try {
+			System.out.println(" EditProfAcronym ");
+			  logger.info("CMS Action -EDIT PROFILE Acronym ****************");
+			  HttpSession session = request.getSession();
+			  actionErrors.clear();
+			  GenericDAO genDao = new GenericDAO();
+			  CMSFormBean cmsForm = (CMSFormBean)form;
+			  String selAcronymQuery = null;			  
+			  String appName = cmsForm.getAppName();
+			  String acronym = null;
+			  if ( !(appName.equals("") || appName.equals(null)) ){
+				  selAcronymQuery = "SELECT ACRONYM from TBL_CMS_MAL where application_name='" +
+			  		appName+"'";
+			  	  acronym = genDao.getAcronym(selAcronymQuery);
+			  	  cmsForm.setAcronym(acronym);
+			  }
+			  else {
+				  cmsForm.setAcronym(acronym);
+			  }
+//			  String loginId = (String) session.getAttribute("login");
+			  //String authType = genDao.getAuthType(appName, acronym, loginId);
+			 // System.out.println("login id is "+loginId);
+			//  if( authType.equals("A") ){
+			  
+			  return mapping.findForward("editProfGroupNew");
+			 /* }
+			 else{
+				  System.out.println("Auth type is ......"+authType);
+				  logger.debug("Auth type for login Id "+loginId+" is "+authType);
+				  return mapping.findForward("editProfAuthCheck");
+			  }*/		
+		
+		} catch (SQLException e) {
+			logger.error("SQL Exception in EDIT PROFILE Acronym  "+e.getMessage());
+			actionErrors.add("db error", new ActionError("error.dbError"));
+			saveErrors(request, actionErrors);
+			return mapping.findForward("editProfAuthCheck");
+		}catch (Exception e) {
+			logger.error("Exception in EDIT PROFILE Acronym "+e.getMessage());
+			actionErrors.add("error", new ActionError("error.message"));
+			saveErrors(request, actionErrors);
+			return mapping.findForward("editProfAuthCheck");
+		}
+			  
+	}
+	
+	public ActionForward editProfGroupNew(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {
+
+				  System.out.println("I am here== Search=");
+				  logger.info("CMS Action -EDIT PROFILE NEW ****************");
+				  MessageResources messageResources = getResources(request); 
+			try{
+				  actionErrors.clear();
+				  GenericDAO genDao = new GenericDAO();
+			   	  HttpSession session = request.getSession();
+			   	  CMSFormBean cmsForm = (CMSFormBean)form; 
+				  ArrayList appList = new ArrayList();
+				  ArrayList auth_types = new ArrayList();
+				  ArrayList auth_type1 = new ArrayList();
+				  ArrayList appList1 = new ArrayList();
+				  HashMap appHash = new HashMap();
+				  String appName = null;
+				  String acronym = null;
+				  String cuid = null;
+				  String insertAppMemQuery = null;
+				  //cuid = (String) session.getAttribute("cuid");				  
+				  String cuidLogged= session.getAttribute("login").toString();
+				  if ( (cuidLogged == null) || (cuidLogged.equals(null) || (cuidLogged.equals(""))) ){
+					  logger.error("Login Id in Edit Prof is null");
+					  actionErrors.clear();
+					  actionErrors.add("errMess", new ActionError("error.message"));
+					  saveErrors(request, actionErrors);				  
+					  return mapping.findForward("editProfAuthCheck");
+				  }
+				  ServletContext context =servlet.getServletContext();
+				  if ( context.getAttribute("appAllList") != null ){
+				 		 appList = (ArrayList)context.getAttribute("appAllList");
+				  }
+				  System.out.println("app list"+appList.size());
+				  session.setAttribute("appList", appList);  
+				  //context.setAttribute("appMap", appHash);
+				  
+				//  appList1 = (ArrayList)genDao.getGroupList("select APPLICATION_NAME, ACRONYM from TBL_CMS_MAL");
+			 	 /* if ( context.getAttribute("appList") == null ){
+			 		  System.out.println("SETTING context ....... null");
+			 		  appHash = (HashMap)genDao.getGroupList("select APPLICATION_NAME, ACRONYM from TBL_CMS_MAL");
+				 	  
+					  Set set = appHash.entrySet();
+			          Iterator it = set.iterator();
+					  while (it.hasNext()) {
+				            Map.Entry entry = (Map.Entry) it.next();
+				            //System.out.println(entry.getKey() + " : " + entry.getValue());
+				            CMSBO bo = new CMSBO();
+							//System.out.println("str arr"+strArr.toString());
+							bo.setAppName(entry.getKey().toString());
+							bo.setAcronym(entry.getValue().toString());
+							appList.add(bo);
+				          }
+					  for( int i=0; i<appList1.size();i++) {
+							String[] strArr = (String[])appList1.get(i); 
+							CMSBO bo = new CMSBO();
+							//System.out.println("str arr"+strArr.toString());
+							bo.setAppName(strArr[0]);
+							bo.setAcronym(strArr[1]);
+							appList.add(bo);
+					  }
+					  context.setAttribute("appMap",appList);
+			 	  }*/
+			 	  
+			
+				  				  
+				//  auth_type1 = (ArrayList)genDAO.getGroupList1("select AUTH_TYPE from TBL_CMS_APP_MEMBER");
+		/*		  for( int i=0; i<auth_type1.size();i++) {
+						String[] strArr = (String[])auth_type1.get(i); 
+						 System.out.println("inside for loop----");
+						CMSBO bo = new CMSBO();
+						System.out.println("str arr"+strArr.toString());
+						bo.setAuthType(strArr[0]);
+						System.out.println("AUTH_typ -----"+bo.getAuthType().toString());
+						auth_types.add(bo);
+				  }
+				  System.out.println("app list"+auth_types.size());
+				  session.setAttribute("auth_types", auth_types);
+				  
+				  cuid = request.getParameter("hidden");
+				  if( cuid!=null ){
+					  insertAppMemQuery = "INSERT INTO TBL_CMS_APP_MEMBER values ( MEMBER_CUID ='"+cuid.toUpperCase()+"'";
+					  genDAO.insertAppMember(insertAppMemQuery);
+				  }
+				  System.out.println("Member cuid parameter in edit prof..."+cuidLogged);
+			*/
+				  
+				  return mapping.findForward("editProfGroupNew");		
+			}catch (Exception e) {
+				logger.error("Exception in Edit Profile New Group "+e.getMessage());
+				actionErrors.add("error", new ActionError("error.message"));
+				saveErrors(request, actionErrors);
+				return mapping.findForward("editProfAuthCheck");
+			}
+		 }
+	
+	public ActionForward groupExists(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {			
+
+		  System.out.println("CMS Action -EDIT PROFILE GROUP EXISTS *******");
+		  logger.info("CMS Action -GROUP EXISTS ****************");
+		  HttpSession session = request.getSession();
+		  CMSFormBean cmsForm = (CMSFormBean)form; 
+		  try {
+			  actionErrors.clear();
+			  String AppName = cmsForm.getAppName().toUpperCase();		  
+			  String Acronym = cmsForm.getAcronym().toUpperCase();
+			  String rcbsCode = cmsForm.getRcbsCode().toUpperCase();
+			  String rcbsMgrCuid = cmsForm.getRcbsMgrCuid().toUpperCase();
+			  String alarmTime = cmsForm.getAlarmTime();
+			  String alarmFreq = cmsForm.getAlarmFreq();
+			  String auth_type = cmsForm.getAuth_type();
+			  String cuid = ((String) session.getAttribute("login")).toUpperCase();
+			  if ( (cuid == null) || (cuid.equals(null) || (cuid.equals(""))) ){
+				  logger.error("Login Id in Edit Prof is null");
+				  actionErrors.add("errMess", new ActionError("error.message"));
+				  saveErrors(request, actionErrors);				  
+				  return mapping.findForward("editProfAuthCheck");
+			  }
+			  System.out.println("Creator CUID in Action class --- "+cuid);
+			  GenericDAO dao = new GenericDAO();		 
+			  MessageResources messageResources = getResources(request);	  
+			  
+			 if(dao.checkOwner(AppName,Acronym) == true)
+			 {	  	 
+				 actionErrors.add("errMess", new ActionError("error.groupExists"));
+				 saveErrors(request, actionErrors);
+				 logger.debug("CMS Action -EDIT PROFILE GROUP EXISTS - This Group already exists in owner table");
+			     System.out.println("this member  exists in owner table");	
+			     return mapping.findForward("editProfGroupNew");
+		     }
+			 else if(dao.checkRowmember(AppName, Acronym,cuid) == true)
+		     {			 
+				 actionErrors.add("errMess", new ActionError("error.memberExists"));
+				 saveErrors(request, actionErrors);
+				 System.out.println("Record exists in Member table");
+				 logger.debug("CMS Action -EDIT PROFILE GROUP EXISTS - This row already exists in member table");
+				 return mapping.findForward("editProfGroupNew");
+			}
+			 else if(dao.checkAlaram(AppName,Acronym) == true)
+			 {			 
+				 actionErrors.add("errMess", new ActionError("error.alarmExists"));
+				 saveErrors(request, actionErrors);
+				 logger.debug("CMS Action -EDIT PROFILE GROUP EXISTS - This alarm details already exists.");
+				 System.out.println("this member  exist in owner table");
+				 return mapping.findForward("editProfGroupNew");
+		     }		 
+			 else
+				 return new CMSAction().createNewGroup(mapping, form, request, response);
+		    //dao.getCreateGroup(AppName,Acronym,cuid,rcbsCode,rcbsMgrCuid, rcbsMbrCuid,alarmTime,alarmFreq);
+		  }  catch (SQLException e) {
+				logger.error("SQL Exception in Group Exists "+e.getMessage());
+				actionErrors.add("db error", new ActionError("error.dbError"));
+				saveErrors(request, actionErrors);
+				return mapping.findForward("editProfAuthCheck");
+			}catch (Exception e) {
+				logger.error("Exception in Group Exists  "+e.getMessage());
+				actionErrors.add("error", new ActionError("error.message"));
+				saveErrors(request, actionErrors);
+				return mapping.findForward("editProfAuthCheck");
+		  }
+		         
+	}	
+	
+	public ActionForward createNewGroup(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {			
+		
+		  System.out.println("In CERATE NEW GROUP *****************");
+		  logger.info("CMS Action -EDIT PROFILE CERATE NEW GROUP *****************");
+		  HttpSession session = request.getSession();
+		  CMSFormBean cmsForm = (CMSFormBean)form; 
+		  actionErrors.clear();
+		  String AppName = cmsForm.getAppName().toUpperCase();		  
+		  String Acronym = cmsForm.getAcronym().toUpperCase();
+		  String rcbsCode = cmsForm.getRcbsCode().toUpperCase();
+		  String rcbsMgrCuid = cmsForm.getRcbsMgrCuid().toUpperCase();
+		  String alarmTime = cmsForm.getAlarmTime();
+		  String alarmFreq = cmsForm.getAlarmFreq();
+		  String auth_type = cmsForm.getAuth_type();
+		  String appUserName = cmsForm.getAppUserName();
+		  String cuid = ((String) session.getAttribute("login")).toUpperCase();
+		  if ( (cuid == null) || (cuid.equals(null) || (cuid.equals(""))) ){
+			  logger.error("Login Id in Edit Prof is null");
+			  actionErrors.clear();
+			  actionErrors.add("errMess", new ActionError("error.message"));
+			  saveErrors(request, actionErrors);				  
+			  return mapping.findForward("editProfAuthCheck");
+		  }
+		  System.out.println("Creator CUID in Action class --- "+cuid);
+		  logger.debug("CMS Action -EDIT PROFILE CERATE NEW GROUP - Creator Cuid - "+cuid);
+		  GenericDAO dao = new GenericDAO();
+		  HashMap appHash = new HashMap();
+		  
+		  try {
+			  boolean insertStatus = false;
+			  insertStatus = dao.createGroup(AppName, Acronym, cuid, rcbsCode, rcbsMgrCuid, alarmTime, alarmFreq, appUserName);
+			  if (insertStatus){
+				  insertStatus = dao.insertAlarmDet(AppName, Acronym, alarmFreq);
+			  }else{
+				  actionErrors.add("errMess", new ActionError("error.noInserts"));
+				  saveErrors(request, actionErrors);
+			  }
+			  if (insertStatus){
+				  insertStatus=dao.createMember(AppName,Acronym,cuid,auth_type);
+			  }else{
+				  actionErrors.add("errMess", new ActionError("error.noInserts"));
+				  saveErrors(request, actionErrors);
+			  }
+			  if (insertStatus){
+				  if(session.getAttribute("appHash") != null){
+					  appHash = (HashMap)session.getAttribute("appHash");
+					  appHash.put(AppName, Acronym);
+					  session.setAttribute("appHash", appHash);
+				  }				  
+			  }			  
+			 return mapping.findForward("edit_profile");
+			 // return new CMSAction().edit_profile(mapping, form, request, response);
+		  }catch (SQLException e) {
+				logger.error("SQL Exception in EDIT PROFILE CERATE NEW "+e.getMessage());
+				actionErrors.add("db error", new ActionError("error.dbError"));
+				saveErrors(request, actionErrors);
+				return mapping.findForward("editProfAuthCheck");
+		  }catch (Exception e) {
+				logger.error("Exception in EDIT PROFILE CERATE NEW "+e.getMessage());
+				actionErrors.add("error", new ActionError("error.request"));
+				saveErrors(request, actionErrors);
+				return mapping.findForward("editProfAuthCheck");
+		  }
+		  
+	}
+	
+	public ActionForward editProfileGroup(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {
+
+			  System.out.println("EDIT PROFILE Group ******************");	
+			  logger.info("CMS Action -EDIT PROFILE GROUP ******************");
+			  MessageResources messageResources = getResources(request); 
+			  HttpSession session = request.getSession();
+			  CMSFormBean cmsForm = (CMSFormBean)form; 
+			  try {
+				  actionErrors.clear();
+				  String selectedApp = request.getParameter("selectGroup");
+				  String selelctedAcronym = request.getParameter("selAcronym");			  
+				  String loginId = (String) session.getAttribute("login");
+				  if ( (loginId == null) || (loginId.equals(null) || (loginId.equals(""))) ){
+					  logger.error("Login Id in Edit Prof is null");
+					  actionErrors.add("errMess", new ActionError("error.message"));
+					  saveErrors(request, actionErrors);				  
+					  return mapping.findForward("editProfAuthCheck");
+				  }
+				  System.out.println("Selected app and acronym...11..."+selectedApp+selelctedAcronym);
+				  if( selectedApp == null || selelctedAcronym == null ){				 
+				      selectedApp = (String)session.getAttribute("appName");
+				      selelctedAcronym = (String)session.getAttribute("acronym");
+				  }
+				  //String selectedAcronym = selAcronym.substring(0,(selAcronym.length()-2));
+				  System.out.println("Selected app and acronym......"+selectedApp+selelctedAcronym);
+				  session.getAttribute("groupList");
+				  StringBuffer searchCuidQuery = new StringBuffer("");
+				  StringBuffer getGroupDataQuery = new StringBuffer("");			  
+				  GenericDAO genDao = new GenericDAO();
+				  String appName = null;
+				  String acronym = null;
+				  String certAlarm = null;
+				  String authType = null;
+
+				  ArrayList cuidList = new ArrayList();
+				  ArrayList cuidList1 = new ArrayList();
+				  ArrayList groupData = new ArrayList();
+				  
+				  cmsForm.setAppName(selectedApp);
+				  cmsForm.setAcronym(selelctedAcronym);			  
+				  
+				  getGroupDataQuery.append("select * from TBL_CMS_APP_OWNER where(");
+				  appName = cmsForm.getAppName();
+				  acronym = cmsForm.getAcronym();
+				 
+				  if( (appName == null) || (acronym == null)){
+					 actionErrors.add("errMess", new ActionError("error.data"));
+					 saveErrors(request, actionErrors);
+					 System.out.println("No Group data");
+				  }
+				  else {
+					  authType = genDao.getAuthType(appName, acronym, loginId);				  
+					  //( !(appName.equals(null) || appName.equals("") || acronym.equals(null) || acronym.equals("")) ){
+					  getGroupDataQuery.append("APPLICATION_NAME = '"+appName.toUpperCase()+"'");
+					  getGroupDataQuery.append("AND ACRONYM = '"+acronym.toUpperCase()+"')");
+					  groupData = genDao.getAppOwnerDetail(getGroupDataQuery.toString());
+					  for( int i=0; i<groupData.size();i++) {
+							String[] strArr = (String[])groupData.get(i); 
+							cmsForm.setCreatorCuid(strArr[2]);
+							cmsForm.setRcbsCode(strArr[3]);
+							cmsForm.setRcbsMgrCuid(strArr[4]);
+							cmsForm.setAppUserName(strArr[5]);
+					  }
+					  certAlarm = genDao.getCertAlarmDetail(appName, acronym);
+					  cmsForm.setAlarmTime(certAlarm);
+					  
+				  }			  
+				  searchCuidQuery.append("select MEMBER_CUID from TBL_CMS_APP_MEMBER where (");
+				  appName = cmsForm.getAppName();
+				  acronym = cmsForm.getAcronym();
+		
+				  if( (appName == null) || (acronym == null)){
+					  actionErrors.add("errMess", new ActionError("error.data"));
+					  saveErrors(request, actionErrors);
+					  System.out.println("No Cuids");
+
+				  }
+				  else {
+					  //( !(appName.equals(null) || appName.equals("") || acronym.equals(null) || acronym.equals("")) ){
+					  searchCuidQuery.append("APPLICATION_NAME = '"+appName.toUpperCase()+"'");
+					  searchCuidQuery.append("AND ACRONYM = '"+acronym.toUpperCase()+"')");
+					  cuidList1 = (ArrayList) genDao.getMemberCuidList(searchCuidQuery.toString());
+					  for( int i=0; i<cuidList1.size();i++) {
+							String[] strArr = (String[])cuidList1.get(i); 
+							CMSBO bo = new CMSBO();
+							System.out.println("str arr"+strArr.toString());
+							bo.setMemberCuid(strArr[0]);						
+							cuidList.add(bo);
+					  }
+				  }			  
+				  session.setAttribute("appName", appName.toUpperCase());
+				  session.setAttribute("acronym", acronym.toUpperCase());
+				  session.setAttribute("cuidList", cuidList);
+				  session.setAttribute("authType", authType);
+				  return mapping.findForward("editProfileGroup");
+			  } catch (SQLException e) {
+					logger.error("SQL Exception in Edit Profile Group "+e.getMessage());
+					 actionErrors.clear();
+					actionErrors.add("db error", new ActionError("error.dbError"));
+					saveErrors(request, actionErrors);
+					return mapping.findForward("editProfAuthCheck");
+				}catch (Exception e) {
+					logger.error("Exception in Edit Profile Group  "+e.getMessage());
+					 actionErrors.clear();
+					actionErrors.add("error", new ActionError("error.request"));
+					saveErrors(request, actionErrors);
+					return mapping.findForward("editProfAuthCheck");
+			  }
+			  
+		 }
+	
+	public ActionForward editProfGroupCuid(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {
+
+			  System.out.println(" EditProfGroupCuid ");
+			  logger.info("CMS Action -EDIT PROFILE GROUP CUID ******************");
+			  MessageResources messageResources = getResources(request); 
+			  HttpSession session = request.getSession();
+			  actionErrors.clear();
+			  try {
+				  GenericDAO genDao = new GenericDAO();
+				  String appName = (String) session.getAttribute("appName");
+				  String acronym = (String) session.getAttribute("acronym");			  
+				  String loginId = (String) session.getAttribute("login");
+				  if ( (loginId == null) || (loginId.equals(null) || (loginId.equals(""))) ){
+					  logger.error("Login Id in Edit Prof is null");
+					  actionErrors.add("errMess", new ActionError("error.message"));
+					  saveErrors(request, actionErrors);				  
+					  return mapping.findForward("editProfAuthCheck");
+				  }
+				  String authType = (String) session.getAttribute("authType");
+				  //String authType = genDao.getAuthType(appName, acronym, loginId);
+				 // System.out.println("login id is "+loginId);
+				  
+				  if( !authType.equals("A") ){	
+					  actionErrors.add("errMess", new ActionError("error.noAuth"));
+					  saveErrors(request, actionErrors);
+					  System.out.println("Auth type in is ......"+authType);
+					  logger.debug("CMS Action -EDIT PROFILE GROUP CUID - Auth type for login Id "+loginId+" is "+authType);
+					  //return mapping.findForward("editProfAuthCheck");
+				  }	
+				  return mapping.findForward("editProfGroupCuid");
+			  } catch (Exception e) {
+					logger.error("Exception in Edit Profile Group Cuid "+e.getMessage());
+					actionErrors.add("error", new ActionError("error.message"));
+					saveErrors(request, actionErrors);
+					return mapping.findForward("editProfAuthCheck");
+			  }
+			  
+		 }
+	
+	public ActionForward editProfCuidInsert(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {
+
+			  System.out.println("Edit Group Profile ------ > EditProfCuid");
+			  logger.info("CMS Action -EDIT PROFILE CUID INSERT ******************");
+			  MessageResources messageResources = getResources(request); 
+			  String insertAppMemQuery = null;		
+			  CMSFormBean cmsForm = (CMSFormBean)form; 
+			  actionErrors.clear();
+			  try {
+				  CMSBO cmsBO = new CMSBO();
+				  GenericDAO genDao = new GenericDAO();
+				  HttpSession session = request.getSession();
+				  boolean insert = false;
+				  boolean memExists = false;
+				  String memCuid = null;
+				  String appName = ((String) session.getAttribute("appName")).toUpperCase();			  
+				  String acronym = ((String) session.getAttribute("acronym")).toUpperCase();			  
+				  String loginId = (String) session.getAttribute("login");
+				  if ( (loginId == null) || (loginId.equals(null) || (loginId.equals(""))) ){
+					  logger.error("Login Id in Edit Prof is null");
+					  actionErrors.add("errMess", new ActionError("error.message"));
+					  saveErrors(request, actionErrors);				  
+					  return mapping.findForward("editProfAuthCheck");
+				  }
+				  String authType = (String) session.getAttribute("authType");			  
+				  memCuid = cmsForm.getMemberCuid();		  
+				  
+				  //String authType = genDao.getAuthType(appName, acronym, loginId);
+				  System.out.println("login id is "+loginId);
+				  
+				  if( authType.equals("A") ){				  
+					  System.out.println("Auth type is "+authType);
+					  logger.debug("Auth type for login Id "+loginId+" is "+authType);
+					  if( memCuid != null ) { 
+						  insertAppMemQuery = "INSERT INTO TBL_CMS_APP_MEMBER values ( '"+appName+"','"+acronym+"','"+memCuid.toUpperCase()+"','"+cmsForm.getAuth_type()+"')";
+						  insert=genDao.insertData(insertAppMemQuery);
+						  cmsBO.setMemberCuid(memCuid);
+						  //cmsBO.setAuthType(authType);
+						  System.out.println("Member cuid parameter in edit prof..."+memCuid+insert);
+						  logger.debug("CMS Action -EDIT PROFILE GROUP CUID -Member cuid parameter - "+memCuid);
+						  ArrayList cuidList =(ArrayList) session.getAttribute("cuidList");
+						  cuidList.add(cmsBO);				  
+						  System.out.println("Size of the new cuid list is -----"+cuidList.size());
+						  logger.debug("CMS Action -EDIT PROFILE GROUP CUID -Size of new Cuid list - "+cuidList.size());
+
+						  session.setAttribute("cuidList", cuidList);
+					  }
+					  return  new CMSAction().editProfileGroup(mapping, form, request, response);
+						 // return mapping.findForward("editProfCuidInsert");
+					}
+				  	else{
+						  System.out.println("Auth type is ......"+authType);
+						  actionErrors.add("errMess", new ActionError("error.noAuth"));
+						  saveErrors(request, actionErrors);
+						  logger.debug("Auth type for login Id "+loginId+" is "+authType);
+						  return mapping.findForward("editProfCuidInsert");
+
+					}	  	
+			  }  catch (SQLException e) {
+					logger.error("SQL Exception in Edit Profile Cuid Insert "+e.getMessage());
+					actionErrors.add("db error", new ActionError("error.dbError"));
+					saveErrors(request, actionErrors);
+					return mapping.findForward("editProfAuthCheck");
+				}catch (Exception e) {
+					logger.error("Exception in Edit Profile Cuid Insert "+e.getMessage());
+					actionErrors.add("error", new ActionError("error.request"));
+					saveErrors(request, actionErrors);
+					return mapping.findForward("editProfAuthCheck");
+			  }
+			  
+					  /*for( int i=0; i < cuidList.length; i++) {
+						  System.out.println("Dont say class cast");
+						  String strArr = (String)cuidList[i];
+						  if( strArr.equals(memCuid)){
+							  memExists = true;
+							  System.out.println("cuid list contains "+memCuid);							  
+						  }
+					  }
+					  if(memExists){
+						  actionErrors.add("errMess", new ActionError("error.memberExists"));
+						  saveErrors(request, actionErrors);
+					  }
+					  else{
+						  insertAppMemQuery = "INSERT INTO TBL_CMS_APP_MEMBER values ( '"+appName+"','"+acronym+"','"+cmsForm.getMemberCuid().toUpperCase()+"','"+cmsForm.getAuth_type()+"')";
+						  insert=genDao.insertData(insertAppMemQuery);
+					  
+						  cmsBO.setMemberCuid(cmsForm.getMemberCuid());
+						  //cmsBO.setAuthType(authType);
+						  System.out.println("Member cuid parameter in edit prof..."+cmsForm.getMemberCuid()+insert);
+						  cuidList1.add(cmsBO);	
+					  }					  
+				  }
+				  System.out.println("Size of the new cuid list is -----"+cuidList1.size());
+				  session.setAttribute("cuidList", cuidList1);*/
+	}
+	
+
+	public ActionForward editProfMemDelete(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {
+			  
+			  logger.info("CMS Action -EDIT PROFILE DELETE ******************");
+			  System.out.println("I am here== EditProfMemDelete=");
+			  MessageResources messageResources = getResources(request); 
+			  String deleteMemQuery = null;		
+			  CMSFormBean cmsForm = (CMSFormBean)form; 
+			  actionErrors.clear();
+			  try {
+				  SearchDAO genDAO  = new SearchDAO();
+				  GenericDAO genDao = new GenericDAO();
+				  HttpSession session = request.getSession();
+				  boolean insert = false;
+				  String memberCuid = request.getParameter("selCuid");
+
+				  String appName = (String) session.getAttribute("appName");
+				  String acronym = (String) session.getAttribute("acronym");
+				  
+				  String loginId = (String) session.getAttribute("login");
+				  if ( (loginId == null) || (loginId.equals(null) || (loginId.equals(""))) ){
+					  logger.error("Login Id in Edit Prof is null");
+					  actionErrors.add("errMess", new ActionError("error.message"));
+					  saveErrors(request, actionErrors);				  
+					  return mapping.findForward("editProfAuthCheck");
+				  }
+				  actionErrors.clear();
+				  String authType = genDao.getAuthType(appName, acronym, loginId);
+				  String[] result ;
+				  System.out.println("login id is "+loginId);
+				  if( authType.equals("A") ){
+					  System.out.println("Delete Memb cuid.... app, acronym, membcuid"+appName+acronym+memberCuid);
+					  //ArrayList cuidList =(ArrayList) session.getAttribute("cuidList");
+					  // ArrayList cuidNewList=new ArrayList();					  
+					  result = memberCuid.split(",");				  
+					 // if (result.length > 1){					  
+						  for (int x=0; x<result.length; x++){
+						         System.out.println("Results....."+result[x]);
+						         if ( result[x].equalsIgnoreCase(loginId.toUpperCase()) ){
+						        	 System.out.println("login equals cuid");
+						        	 logger.debug("CMS Action -EDIT PROFILE DELETE - Login Id is same as Delete Cuid.");
+						        	 actionErrors.add("errMess", new ActionError("error.deleteSelfCuid"));
+									 saveErrors(request, actionErrors);
+						         }
+						         else{
+						        	 deleteMemQuery="DELETE from TBL_CMS_APP_MEMBER where (" +
+						         		"APPLICATION_NAME='"+appName+"' AND " +
+						         		"ACRONYM='"+acronym+"' AND " +
+						         		"MEMBER_CUID='"+result[x]+"')";
+						        	 logger.debug("CMS Action -EDIT PROFILE DELETE - Deleting the Cuid ... "+result[x]);
+						         genDao.deleteAppMember(deleteMemQuery);
+						         }			     
+						  }
+					 // }	  
+					 /* else{
+						  System.out.println("in else");
+						  if (memberCuid.equals(loginId.toUpperCase())){
+							  System.out.println("login equals cuid  else");
+					        	 actionErrors.add("errMess", new ActionError("error.deleteSelfCuid"));
+								 saveErrors(request, actionErrors);
+					         }
+					         else{
+					        	 System.out.println("login is not equal .........sooooo");
+					        	 deleteMemQuery="DELETE from TBL_CMS_APP_MEMBER where (" +
+					         		"APPLICATION_NAME='"+appName+"' AND " +
+					         		"ACRONYM='"+acronym+"' AND " +
+					         		"MEMBER_CUID='"+memberCuid+"')";
+					         genDao.deleteAppMember(deleteMemQuery);
+					         }			     
+					  }*/
+					  
+	/*					     Iterator ir=cuidList.iterator();
+				              while(ir.hasNext()){
+				             	 CMSBO bo=(CMSBO)ir.next();
+
+				             	 if((bo.getMemberCuid().equals(result[x]))){
+				             		cuidNewList.
+				             	 }
+				              }
+							  }
+	*/
+					  return  new CMSAction().editProfileGroup(mapping, form, request, response);
+					  //return mapping.findForward("editProfileGroup");
+				  }
+				  else{
+					  actionErrors.clear();
+					  actionErrors.add("errMess", new ActionError("error.noAuth"));
+					  saveErrors(request, actionErrors);
+					  System.out.println("Auth type is ......"+authType);
+					  logger.debug("Auth type for login Id "+loginId+" is "+authType);
+					  return mapping.findForward("editProfAuthCheck");
+				  }
+			  }catch (SQLException e) {
+					logger.error("SQL Exception in Edit Profile Delete "+e.getMessage());
+					actionErrors.clear();
+					actionErrors.add("db error", new ActionError("error.dbError"));
+					saveErrors(request, actionErrors);
+					return mapping.findForward("editProfAuthCheck");
+			  }catch (Exception e) {
+					logger.error("Exception in Edit Profile Delete "+e.getMessage());
+					actionErrors.clear();
+					actionErrors.add("error", new ActionError("error.request"));
+					saveErrors(request, actionErrors);
+					return mapping.findForward("editProfAuthCheck");
+			  }
+			  
+			 // System.out.println("Delete cuid result..."+genDao.deleteAppMember(deleteMemQuery));
+			 // logger.debug("Hi---------> , inside Search");
+			 //session.removeAttribute("cuidList");
+			 //return editProfileGroup(mapping,form,request,response);
+			  
+		 }
+	
+	public ActionForward editGroupSave(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {
+
+			  System.out.println("I am here== EditGroupSave=");
+			  logger.info("CMS Action -EDIT GROUP SAVE *************** ");
+			  MessageResources messageResources = getResources(request); 
+			  String updateAppOwnerQuery = null;
+			  String updateCertAlarmQuery = null;	
+			  CMSFormBean cmsForm = (CMSFormBean)form; 
+			  try {
+				  actionErrors.clear();
+				  SearchDAO genDAO  = new SearchDAO();
+				  GenericDAO genDao = new GenericDAO();
+				  HttpSession session = request.getSession();
+				  boolean update = false;
+				  String appName = (String) session.getAttribute("appName");
+				  String acronym = (String) session.getAttribute("acronym");
+				  String authType = (String) session.getAttribute("authType");
+				 
+				  updateAppOwnerQuery = "UPDATE TBL_CMS_APP_OWNER SET " +
+				  		"APPLICATION_NAME='"+cmsForm.getAppName()+"'," +
+				  		"ACRONYM='"+cmsForm.getAcronym()+"'," +
+				  		"CREATOR_CUID='"+cmsForm.getCreatorCuid()+"'," +
+				  		"RCBS_CODE='"+cmsForm.getRcbsCode()+"'," +
+				  		"RCBS_MGR_CUID='"+cmsForm.getRcbsMgrCuid()+"'," +			  		
+				  		"APP_USER_NAMES='"+cmsForm.getAppUserName()+"'" +
+				  		" where (" +
+				  		"APPLICATION_NAME='"+appName+"' AND " +
+				  		"ACRONYM='"+acronym+"'" +
+				  		")";			  			  
+				  
+				  updateCertAlarmQuery = "UPDATE TBL_CMS_CERT_ALARM SET " +
+				  	"APPLICATION_NAME='"+cmsForm.getAppName()+"'," +
+			  		"ACRONYM='"+cmsForm.getAcronym()+"'," +
+			  		"ALARM_FREQ='"+cmsForm.getAlarmTime()+"'" +		  		
+			  		" where (" +
+			  		"APPLICATION_NAME='"+appName+"' AND " +
+			  		"ACRONYM='"+acronym+"'" +
+			  		")";
+				  
+				  if( authType.equals("A") ){
+					  logger.debug("CMS Action -EDIT GROUP SAVE - Updating Group Details for "+cmsForm.getMemberCuid());
+					  genDao.updateGroup(updateAppOwnerQuery);
+					  genDao.updateGroup(updateCertAlarmQuery);				  
+					  System.out.println("Member cuid parameter in edit prof..."+cmsForm.getMemberCuid()+update);
+				  }
+				  else{
+					  actionErrors.add("errMess", new ActionError("error.noAuth"));
+					  saveErrors(request, actionErrors);
+				  }
+				 // logger.debug("Hi---------> , inside Search");
+				  return mapping.findForward("edit_profile");
+			  }  catch (SQLException e) {
+					logger.error("SQL Exception in Edit Group Save "+e.getMessage());
+					actionErrors.clear();
+					actionErrors.add("db error", new ActionError("error.dbError"));
+					saveErrors(request, actionErrors);
+					return mapping.findForward("editProfAuthCheck");
+				}catch (Exception e) {
+					logger.error("Exception in Edit Group Save "+e.getMessage());
+					actionErrors.clear();
+					actionErrors.add("error", new ActionError("error.request"));
+					saveErrors(request, actionErrors);
+					return mapping.findForward("editProfAuthCheck");
+			  }
+			  
+		 }	
+	
+	public ActionForward editProfAuthCheck(ActionMapping mapping,
+			   ActionForm form, HttpServletRequest request,
+			   HttpServletResponse response) throws Exception {
+
+			  System.out.println("I am here== EditProfAuthCheck=");
+			  logger.info("CMS Action -EDIT PROF AUTH CHECK ************");
+			  
+			 // logger.debug("Hi---------> , inside Search");
+			  return mapping.findForward("editProfAuthCheck");
+		 }		
+	
+	public ActionForward search(ActionMapping mapping,
+				   ActionForm form, HttpServletRequest request,
+				   HttpServletResponse response) throws Exception {			
+
+		  System.out.println("I am here== Search=");
+		  logger.info("CMS Action -SEARCH ************");
+		  HttpSession session = request.getSession();
+		  try{
+				int totalCert=0;
+				actionErrors.clear();
+				String cuid= session.getAttribute("login").toString();
+				if ( (cuid == null) || (cuid.equals(null) || (cuid.equals(""))) ){
+					  logger.error("Login Id in Edit Prof is null");
+					  actionErrors.add("errMess", new ActionError("error.message"));
+					  saveErrors(request, actionErrors);				  
+					  return mapping.findForward("editProfAuthCheck");
+				  }
+				/*String distinct_query="select APPLICATION_NAME,ACRONYM,CERT_NICKNAME from "
+									  +"TBL_CMS_CERTIFICATES where TBL_CMS_CERTIFICATES.CREATOR_CUID='ipatan'"
+									  +"group by grouping sets((APPLICATION_NAME),(ACRONYM),(CERT_NICKNAME))";
+
+				*/
+				StringBuffer distinct_query=new StringBuffer("select APPLICATION_NAME,ACRONYM,CERT_NICKNAME from TBL_CMS_CERTIFICATES ");
+				distinct_query.append("where APPLICATION_NAME in ");
+				distinct_query.append("(select APPLICATION_NAME from TBL_CMS_APP_MEMBER where MEMBER_CUID ='"+cuid+"') ");
+				distinct_query.append("group by grouping sets((APPLICATION_NAME),(ACRONYM),(CERT_NICKNAME))");
+				System.out.println("new---- Distinct query---->"+distinct_query.toString());
+				GenericDAO genericDAO = new GenericDAO();
+				//ArrayList distinctList = new ArrayList();
+				ArrayList distinctList1 = new ArrayList();
+				distinctList1=genericDAO.getDisntColumn(distinct_query.toString());
+				System.out.println("Distinct applications extracted...");
+				logger.debug("CMS Action -SEARCH - Distinct applications extracted...");							
+				int i = distinctList1.size();
+				System.out.println("No. of distict records extracted-->  "+i);
+				logger.debug("CMS Action -SEARCH - No. of distinct records extracted-->  "+i);				
+				
+				/*for( i=0;i<distinctList1.size();i++) {
+					String[] strArr = (String[])distinctList1.get(i);					
+					CMSBO cms = new CMSBO();					
+					cms.setAppName(strArr[0]);					
+					System.out.println("inside search action-->"+strArr[0]);				
+					distinctList.add(cms);					
+				}*/							
+				session.setAttribute("distinctList", distinctList1);				
+				/*String totCert =  (session.getAttribute("totalCert")).toString();
+				int totlCert = Integer.parseInt(totCert);*/
+				//Reminder_query();
+			}catch(CMSBaseException rbe){
+				logger.error("CMS Action -SEARCH - During the List of the PAFs ==>");
+				System.out.println("During the List of the PAFs ==>");				
+				actionErrors.add("db error", new ActionError("error.message"));			
+			
+			}catch(SQLException rbe){				
+				logger.error("CMS Action -SEARCH - During the List of the PAFs ==>");
+				System.out.println("During the List of the PAFs ==>");				
+				actionErrors.add("db error", new ActionError("error.dbError"));			
+			}
+			if(!actionErrors.isEmpty()){
+				 saveErrors(request,actionErrors);
+				 return mapping.findForward("error");
+			}
+		  return mapping.findForward("search");
+	 }
+	
+	public ActionForward mgrAppCrt(ActionMapping mapping, 
+			ActionForm form, HttpServletRequest request, 
+			HttpServletResponse response) throws Exception {
+	    System.out.println("CMS Action -CERT IN ACCOUNT redirect************"+request.getParameter("appName"));
+	    //request.setAttribute("appName", request.getParameter("appName"));
+	    return mapping.findForward("mgrAppCrt");
+	}
+	
+	public ActionForward certInAccount(ActionMapping mapping, 
+			ActionForm form, HttpServletRequest request, 
+			HttpServletResponse response) throws Exception {
+		HttpSession session = request.getSession();
+		
+		logger.info("CMS Action -CERT IN ACCOUNT *****************");
+		
+		try{
+		    
+		        actionErrors.clear();
+		        String cuid= session.getAttribute("login").toString();
+		        if ( (cuid == null) || (cuid.equals(null) || (cuid.equals(""))) ){
+					  logger.error("Login Id in Edit Prof is null");
+					  actionErrors.clear();
+					  actionErrors.add("errMess", new ActionError("error.message"));
+					  saveErrors(request, actionErrors);				  
+					  return mapping.findForward("editProfAuthCheck");
+				  }
+		        String crt_home[]=CMSProperties.getString("crt_home").split("/");      
+		        
+		        StringBuffer sb1 = new StringBuffer("SELECT m.application_name,m.creator_cuid,n.HOST_ID,n.STATUS,n.EXPIRE_ON," );
+		        sb1.append(" SUBSTR(k.RAW_CERTIFICATE,INSTR(k.RAW_CERTIFICATE,'/',1,"+(crt_home.length+2)+")+1) crt_name " );
+		        sb1.append("FROM tbl_cms_app_owner m, tbl_cms_certificates n, TBL_CMS_CERT_DETAILS k " );
+		        sb1.append("WHERE rcbs_mgr_cuid = '"+cuid+"' and n.ISSUER=k.ISSUER(+) and m.application_name = n.application_name(+)");
+		        String mgrListQuery= sb1.toString();
+		        
+		        GenericDAO genDAO = new GenericDAO();
+		        ArrayList mgrList =genDAO.getMgrList(mgrListQuery);
+		    if(mgrList.size()>0){
+		       
+		        Set s=new HashSet();
+		        ArrayList mgrhome =new ArrayList();
+		        for(int i=0;i<mgrList.size();i++){
+		            String app1=((CMSBO) mgrList.get(i)).getAppName();
+		            if(!s.contains(app1)){
+		                int count=0;
+		                CMSBO tmpbo=new CMSBO();
+		                s.add(app1);
+		            for(int j=0;j<mgrList.size();j++){
+		                if(app1.equals(((CMSBO) mgrList.get(j)).getAppName())){
+		                    if(((((CMSBO) mgrList.get(j)).getCert_status()))!=null&&!(((CMSBO) mgrList.get(j)).getCert_status()).equals(""))
+		                   count++; 
+		                }
+		            }
+		            tmpbo.setAppName(app1);
+		            tmpbo.setCreatorCuid(((CMSBO) mgrList.get(i)).getCreatorCuid());
+		            tmpbo.setNoCrtOfApp(Integer.toString(count));
+		            mgrhome.add(tmpbo);
+		            }
+		        }
+		        session.setAttribute("mgrList", mgrList);
+		        session.setAttribute("mgrhome", mgrhome);
+		        return mapping.findForward("home_mgr");
+		      }        	
+		    else{
+			actionErrors.clear();
+			int totalCert=0;
+			/*//String cuid= session.getAttribute("login").toString();
+			if ( (cuid == null) || (cuid.equals(null) || (cuid.equals(""))) ){
+				  logger.error("Login Id in Edit Prof is null");
+				  actionErrors.clear();
+				  actionErrors.add("errMess", new ActionError("error.message"));
+				  saveErrors(request, actionErrors);				  
+				  return mapping.findForward("editProfAuthCheck");
+			  }*/
+			StringBuffer sb = new StringBuffer("select   m.cert_seq_nu,m.APPLICATION_NAME,m.ACRONYM,m.CERT_NICKNAME,m.CERT_TYPE,m.EXPIRE_ON,m.STATUS, n.RAW_CERTIFICATE from tbl_cms_certificates m, TBL_CMS_CERT_DETAILS n ");
+			//sb.append("where m.APPLICATION_NAME in (select APPLICATION_NAME from TBL_CMS_APP_MEMBER where upper(MEMBER_CUID) ='"+ cuid.toUpperCase()+"') and m.ACRONYM in (select ACRONYM from TBL_CMS_APP_MEMBER where upper(MEMBER_CUID) ='"+ cuid.toUpperCase()+ "')");
+			//sb.append(" and (n.SERIALNO = m.SERIAL_NO )");
+			sb.append("WHERE n.SERIALNO = m.SERIAL_NO and n.ISSUER=m.ISSUER AND upper(m.CREATOR_CUID)='"+ cuid.toUpperCase()+ "'");
+			//sb.append("select m.cert_seq_nu,m.APPLICATION_NAME,m.ACRONYM,m.CERT_NICKNAME,m.CERT_TYPE,m.EXPIRE_ON,m.STATUS from tbl_cms_certificates m where m.CREATOR_CUID="+"'"+cuid+"'");
+			/*sb.append(" select distinct  m.cert_seq_nu,m.APPLICATION_NAME,m.ACRONYM,m.CERT_NICKNAME,m.CERT_TYPE,m.EXPIRE_ON,m.STATUS from tbl_cms_certificates m");
+			sb.append(" where m.APPLICATION_NAME in (select APPLICATION_NAME from tbl_cms_certificates where CREATOR_CUID='"+cuid+"'");
+			sb.append(" union select APPLICATION_NAME from TBL_CMS_APP_MEMBER where MEMBER_CUID ='"+cuid+"')");
+		*/
+			String accountListQuery= sb.toString();
+			System.out.println("account list query---->"+accountListQuery);
+			GenericDAO genericDAO = new GenericDAO();
+			ArrayList accountList = new ArrayList();
+			ArrayList accountList1 = new ArrayList();
+			accountList1=genericDAO.getCertList(accountListQuery);
+			System.out.println("certificates in the account extracted...");
+			logger.debug("CMS Action -CERT IN ACCOUNT - Certificates in the account extracted...");
+						
+			int i = accountList1.size();
+			System.out.println("No. of records extracted-->  "+i);
+			logger.debug("CMS Action -CERT IN ACCOUNT - No. of records extracted-->  "+i);
+			totalCert = i;
+			
+			for( i=0;i<accountList1.size();i++) {
+				String[] strArr = (String[])accountList1.get(i);
+				
+				CMSBO cms = new CMSBO();
+				//System.out.println("serialNO-->"+strArr[0]);
+				logger.debug("CMS Action -CERT IN ACCOUNT - Account Details  -->  "+strArr[0]+strArr[1]+strArr[2]+strArr[3]+strArr[4]+strArr[5]+strArr[6]);
+				cms.setSerialNo(strArr[0]);	
+				cms.setAppName(strArr[1]);
+				cms.setAcronym(strArr[2]);
+				cms.setNickName(strArr[3]);
+				cms.setType(strArr[4]);
+				cms.setExpDate(strArr[5]);
+				cms.setStatus(strArr[6]);
+				/*if ( strArr[7].indexOf('/') != -1)
+					cms.setRaw_certificate(strArr[7].substring(strArr[7].lastIndexOf('/')+1,strArr[7].length()).toUpperCase());
+				if ( strArr[7].indexOf('\\') != -1)
+					cms.setRaw_certificate(strArr[7].substring(strArr[7].lastIndexOf('\\')+1,strArr[7].length()).toUpperCase());*/
+				if ( strArr[7].indexOf('#') != -1)
+					cms.setRaw_certificate(strArr[7].substring(strArr[7].lastIndexOf('#')+1,strArr[7].length()).toUpperCase());				
+				else if ( strArr[7].indexOf('/') != -1)
+					cms.setRaw_certificate(strArr[7].substring(strArr[7].lastIndexOf('/')+1,strArr[7].length()).toUpperCase());
+				else if ( strArr[7].indexOf('\\') != -1)
+					cms.setRaw_certificate(strArr[7].substring(strArr[7].lastIndexOf('\\')+1,strArr[7].length()).toUpperCase());
+
+				/*try{
+					String expDateStr = strArr[5];
+					Date expDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS").parse(expDateStr);
+					System.out.println("Expiry Date is " + expDate);
+					
+					Calendar expDateCal = Calendar.getInstance();
+					expDateCal.setTime(expDate);
+					Calendar todaysDate = Calendar.getInstance();
+					System.out.println("Today's Date is " + todaysDate.getTime());
+					int daysBetween = 0;
+					while (todaysDate.before(expDateCal)) {
+						todaysDate.add(Calendar.DAY_OF_MONTH, 1);
+						daysBetween++;
+					}					
+					
+					System.out.println("Number of Days = " + daysBetween);
+					String days_diff =Integer.toString(daysBetween);
+					
+					cms.setDaysDiff(days_diff);
+					
+				}
+					catch (ParseException e) {
+						e.printStackTrace();	
+					}*/
+				//System.out.println(strArr[0]);
+				//System.out.println(strArr[1]);	
+				//System.out.println(strArr[2]);	
+				//System.out.println(strArr[3]);	
+				//System.out.println(strArr[4]);	
+				//System.out.println(strArr[5]);
+				//System.out.println(strArr[6]);
+				//System.out.println("===========");	
+				accountList.add(cms);				
+			}	
+			
+			session.setAttribute("accountList", accountList);
+			session.setAttribute("totalCert",new Integer(totalCert));
+			session.removeAttribute("checkedRadioValue");
+			session.removeAttribute("pageToCall");
+			actionErrors.clear();
+			return mapping.findForward("home");	
+					
+		    }
+		    
+		} catch (CMSBaseException e) {
+			logger.error("Exception in CERT IN ACCOUNT   "+e.getMessage());
+			actionErrors.add("db error", new ActionError("error.dbError"));
+			saveErrors(request, actionErrors);
+			return mapping.findForward("editProfAuthCheck");
+		}catch (Exception e) {
+			logger.error("Exception in CERT IN ACCOUNT  "+e.getMessage());
+			actionErrors.add("error", new ActionError("error.message"));
+			saveErrors(request, actionErrors);
+			return mapping.findForward("editProfAuthCheck");
+		}
+		/*}catch(CMSBaseException rbe){
+			logger.error("CMS Action -CERT IN ACCOUNT - During the List of the Certs ==>");
+			System.out.println("During the List of the Certs ==>");
+			
+			actionErrors.add("db error", new ActionMessage(rbe.getMessage()));			
+		}catch(SQLException rbe){
+			
+			logger.error("CMS Action -CERT IN ACCOUNT - During the List of the Certs ==>");
+			System.out.println("During the List of the Certs ==>");			
+			actionErrors.add("db error", new ActionMessage(rbe.getMessage()));			
+		}*/
+			
+/*		if(!actionErrors.isEmpty()){
+			 saveErrors(request,actionErrors);
+			 return mapping.findForward("error");
+		}*/
+		//System.out.println("I am here=list=="+mapping.findForward("home"));
+		//String login = session.getAttribute("login").toString();
+		/* if(login!=null && login.equalsIgnoreCase("approver")){
+			 return mapping.findForward("approver");
+		 }else{*/
+		
+				 
+		// }		
+	}
+	
+	public ActionForward searchResult(ActionMapping mapping, 
+			ActionForm form, HttpServletRequest request, 
+			HttpServletResponse response) throws Exception {
+		
+		logger.info("CMS Action - SEARCH RESULT **************** ");
+		CMSFormBean CMSbean = (CMSFormBean) form;
+		HttpSession session = request.getSession();
+		try{
+			actionErrors.clear();
+			//StringBuffer search_query=new StringBuffer("select cer.SERIAL_NO,cer.CERT_NAME,cer.NICK_NAME,cer.TYPE,cer.EXPIRY_DATE,cer.STATUS   from CERT cer where  cer.STATUS='EXPIRED' ");
+			//search_query.append(" where m.CMS_ID=h.CMS_ID and m.STATUS not in(");
+			//search_query.append("\'Rejected','Approved')");
+			String cuid=session.getAttribute("login").toString();
+			if ( (cuid == null) || (cuid.equals(null) || (cuid.equals(""))) ){
+				  logger.error("Login Id in Edit Prof is null");
+				  actionErrors.add("errMess", new ActionError("error.message"));
+				  saveErrors(request, actionErrors);				  
+				  return mapping.findForward("editProfAuthCheck");
+			  }
+			
+			StringBuffer search_query = new StringBuffer("");
+			//sb.append("select m.cert_seq_nu,m.APPLICATION_NAME,m.ACRONYM,m.CERT_NICKNAME,m.CERT_TYPE,m.EXPIRE_ON,m.STATUS from tbl_cms_certificates m where m.CREATOR_CUID="+"'"+cuid+"'");
+			/*search_query.append(" select distinct  m.cert_seq_nu,m.APPLICATION_NAME,m.ACRONYM,m.CERT_NICKNAME,m.CERT_TYPE,m.EXPIRE_ON,m.STATUS from tbl_cms_certificates m");
+			search_query.append(" where m.APPLICATION_NAME in (select APPLICATION_NAME from tbl_cms_certificates where CREATOR_CUID='"+cuid+"'");
+			search_query.append(" union select APPLICATION_NAME from TBL_CMS_APP_MEMBER where MEMBER_CUID ='"+cuid+"')");
+		*/
+			
+			search_query.append(" select  m.cert_seq_nu,m.APPLICATION_NAME,m.ACRONYM,m.CERT_NICKNAME,m.CERT_TYPE,m.EXPIRE_ON,m.STATUS,n.RAW_CERTIFICATE from tbl_cms_certificates m,TBL_CMS_CERT_DETAILS n where (n.SERIALNO = m.SERIAL_NO and n.issuer=m.issuer)");
+			search_query.append("AND m.CREATOR_CUID IN('"+cuid+"')");
+			//search_query.append(" and m.APPLICATION_NAME in ");
+			//search_query.append("(select APPLICATION_NAME from TBL_CMS_APP_MEMBER where MEMBER_CUID ='"+cuid+"')");
+		
+			//StringBuffer search_query=new StringBuffer("select m.cert_seq_nu,m.APPLICATION_NAME,m.ACRONYM,m.CERT_NICKNAME,m.CERT_TYPE,m.EXPIRE_ON,m.STATUS from tbl_cms_certificates m ");			
+			//search_query.append("where m.CREATOR_CUID="+"'"+ session.getAttribute("login").toString()+"'");			
+			
+			/*System.out.println("App Name value---->" +CMSbean.getAppName());
+			System.out.println("Acronym value---->" +CMSbean.getAcronym());
+			System.out.println("Nick Name value---->" +CMSbean.getNickName());
+			System.out.println("Cert Type value---->" +CMSbean.getType());
+			System.out.println("Expiry Date value---->" +CMSbean.getExpBefDate());
+			System.out.println("Status---->" +CMSbean.getStatus());
+			System.out.println("Serial No ----> "+ CMSbean.getSerialNo());*/
+			
+			// Checking for the value of application Name
+
+			if(!(CMSbean.getAppName().equals("")))
+			{				
+					//System.out.println("Application name is  selected==================");
+					logger.debug("CMS Action - SEARCH RESULT - Application name is  selected==================");
+					search_query.append(" and upper(m.APPLICATION_NAME)='"+CMSbean.getAppName().toUpperCase()+"'" );
+				
+			}
+			else{
+			search_query.append("");
+			//System.out.println("No Application name is selected================");
+			logger.debug("CMS Action - SEARCH RESULT - No Application name is selected================");
+			}
+			//	 Checking for the value of Acronym
+			
+			if(!(CMSbean.getAcronym().equals("")))
+			{
+			//System.out.println("Acronym is  selected==================");
+			logger.debug("CMS Action - SEARCH RESULT - Acronym is  selected==================");
+			search_query.append(" and upper(m.ACRONYM)='"+CMSbean.getAcronym().toUpperCase()+"'");
+		
+			}
+			else{
+			search_query.append("");
+			//System.out.println("No Acronym  is selected================");
+			logger.debug("CMS Action - SEARCH RESULT - No Acronym  is selected================");
+			}
+			//Checking for the value of Nick Name
+			
+			if(!(CMSbean.getNickName().equals("")))
+			{
+			//System.out.println("Nick name is  selected==================");
+			logger.debug("CMS Action - SEARCH RESULT - Nick name is  selected==================");
+			search_query.append(" and upper(m.CERT_NICKNAME)='"+ CMSbean.getNickName().toUpperCase()+"'");			
+			}			
+			else{
+			search_query.append("");
+			//System.out.println("No Nick name is selected================");
+			logger.debug("CMS Action - SEARCH RESULT - No Nick name is selected================");
+			}
+			//	Checking for the value of  on or before expiry date 
+			
+			if(!(CMSbean.getExpBefDate().equals("")))
+			{
+			//System.out.println("on or before expiry date is  selected==================");
+			logger.debug("CMS Action - SEARCH RESULT - On or before expiry date is  selected==================");
+			search_query.append(" and m.EXPIRE_ON < to_date('");
+			search_query.append(CMSbean.getExpBefDate());
+			search_query.append("','MM-DD-YYYY')");
+			}
+			else{
+			search_query.append("");
+			//System.out.println(" on or before expiry date is not selected================");
+			logger.debug("CMS Action - SEARCH RESULT - On or before expiry date is not selected================");
+			}
+//			Checking for the value of Status
+			
+			if(!(CMSbean.getStatus().equals("")))
+			{
+			//System.out.println("Status is  selected==================");
+			logger.debug("CMS Action - SEARCH RESULT - Status is  selected==================");
+			search_query.append(" and upper(m.STATUS)='"+CMSbean.getStatus().toUpperCase()+"'");
+			
+			}
+			else{
+			search_query.append("");
+			//System.out.println("No Status is selected================");
+			logger.debug("CMS Action - SEARCH RESULT - No Status is selected================");
+			}
+//			Checking for the value of Type of certificate.
+			
+			if(!(CMSbean.getType().equals("")))
+			{
+			//System.out.println("Type is  selected==================");
+			logger.debug("CMS Action - SEARCH RESULT - Type is  selected==================");
+			search_query.append(" and upper(m.CERT_TYPE)='"+CMSbean.getType().toUpperCase()+"'");
+		
+			}
+			else{
+			search_query.append("");
+			//System.out.println("No Type is selected================");
+			logger.debug("CMS Action - SEARCH RESULT - No Type is selected================");
+			}
+			search_query.append(" "+ "order by 1");
+			//System.out.println("search query------->"+search_query);
+			logger.debug("CMS Action - SEARCH RESULT - Search query------->"+search_query);
+			
+			
+
+			GenericDAO genericDAO = new GenericDAO();
+			ArrayList searchList = new ArrayList();
+			ArrayList searchList1 = new ArrayList();//(ArrayList)genericDAO.getData("");
+			searchList1=genericDAO.getCertList(search_query.toString());
+			System.out.println("search query------->"+search_query);
+			System.out.println("List extracted");
+			logger.debug("CMS Action - SEARCH RESULT - List extracted");
+			int i = searchList1.size();
+			//System.out.println("No. of records "+i);
+			logger.debug("CMS Action - SEARCH RESULT - No. of records "+i);
+			
+			int display_search= searchList1.size();
+			String is_searching ="true";
+			
+			for( i=0;i<searchList1.size();i++) {
+				String[] strArr = (String[])searchList1.get(i);				
+				CMSBO cms = new CMSBO();					
+				cms.setSerialNo(strArr[0]);
+				cms.setAppName(strArr[1]);
+				cms.setAcronym(strArr[2]);
+				cms.setNickName(strArr[3]);
+				cms.setType(strArr[4]);
+				cms.setExpDate(strArr[5]);
+				cms.setStatus(strArr[6]);				
+				/*if ( strArr[7].indexOf('/') != -1)
+					cms.setRaw_certificate(strArr[7].substring(strArr[7].lastIndexOf('/')+1,strArr[7].length()).toUpperCase());
+				if ( strArr[7].indexOf('\\') != -1)
+					cms.setRaw_certificate(strArr[7].substring(strArr[7].lastIndexOf('\\')+1,strArr[7].length()).toUpperCase());*/
+				if ( strArr[7].indexOf('#') != -1)
+					cms.setRaw_certificate(strArr[7].substring(strArr[7].lastIndexOf('#')+1,strArr[7].length()).toUpperCase());				
+				else if ( strArr[7].indexOf('/') != -1)
+					cms.setRaw_certificate(strArr[7].substring(strArr[7].lastIndexOf('/')+1,strArr[7].length()).toUpperCase());
+				else if ( strArr[7].indexOf('\\') != -1)
+					cms.setRaw_certificate(strArr[7].substring(strArr[7].lastIndexOf('\\')+1,strArr[7].length()).toUpperCase());
+
+				searchList.add(cms);	
+				System.out.println("raw cert -------- "+cms.getRaw_certificate());
+			}		
+			System.out.println("search list size is ----- "+searchList.size());
+			session.setAttribute("accountList", searchList);
+			session.setAttribute("searchRecord", new Integer(searchList.size()));
+			session.setAttribute("display_search",new Integer (display_search));
+			session.setAttribute("is_searching",is_searching);
+			session.removeAttribute("pageToCall");
+			session.removeAttribute("checkedRadioValue");
+			if(searchList.size()==0)
+			{
+			}	
+			System.out.println("search list is not 0");
+			//System.out.println("I am here== searchResult="+mapping.findForward("searchResult"));
+			logger.debug("CMS Action - SEARCH RESULT - "+searchList.size());
+			return mapping.findForward("home");
+		} catch (SQLException e) {
+			logger.error("SQL Exception in Search Result  "+e.getMessage());
+			actionErrors.add("db error", new ActionError("error.dbError"));
+			saveErrors(request, actionErrors);
+			return mapping.findForward("editProfAuthCheck");
+		}catch (Exception e) {
+			logger.error("Exception in Search Result "+e.getMessage());
+			actionErrors.add("error", new ActionError("error.message"));
+			saveErrors(request, actionErrors);
+			return mapping.findForward("editProfAuthCheck");
+		}	
+		
+	}
+	
+	public void ajax(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+		 
+			 String result_query=CMSProperties.getString("query_home_details")+ request.getParameter("selectCert");		  
+			 System.out.println("query to execute-->"+result_query );
+			 logger.info("CMS Action - AJAX ***************");		 
+			 
+			/* for(int i=0;i < res.length; i++)
+			 {
+				 System.out.println(res[i]);
+			 }
+			*/
+			  System.out.println("I am inside ajax: value is-->"+ request.getParameter("selectCert"));
+			  logger.debug("CMS Action - AJAX - inside ajax: value is-->"+ request.getParameter("selectCert"));
+			  HttpSession session = request.getSession();			 
+			  session.setAttribute("checkedRadioValue",request.getParameter("selectCert"));
+			  System.out.println("in session"+ session.getAttribute("checkedRadioValue"));
+			  logger.debug("CMS Action - AJAX - Selected cert Number is "+session.getAttribute("checkedRadioValue"));
+			  GenericDAO genDAO = new GenericDAO();
+				 
+				 String res[]= genDAO.getAllDetails(result_query);
+				 CMSBO cms = new CMSBO();
+				 cms.setAppName(res[0]);
+				 cms.setAcronym(res[1]);
+				 cms.setSerialNo(res[2]);
+				 cms.setCertNickname(res[3]);
+				 cms.setStatus(res[4]);
+				 cms.setIssuer(res[5]);
+				 cms.setSubject_CN(res[6]);
+				 cms.setIssuer_CN(res[7]);
+				 cms.setFrom_dt(res[8]);
+				 cms.setExpiry_dt(res[9]);
+				 if ( res[10].toUpperCase().indexOf('/') != -1)
+						cms.setRaw_certificate(res[10].substring(res[10].lastIndexOf('/')+1,res[10].length()).toUpperCase());
+				 if ( res[10].indexOf('\\') != -1)
+						cms.setRaw_certificate(res[10].substring(res[10].lastIndexOf('\\')+1,res[10].length()).toUpperCase());
+				 //cms.setRaw_certificate(res[10].toUpperCase());
+				 cms.setSignature_algo(res[11]);
+				 cms.setPublic_key(res[12]);
+				 cms.setNotes(res[13]);
+				 cms.setRcbsCode(res[14]);
+				 cms.setRcbsMgrCuid(res[15]);
+				 session.setAttribute("DetailInfo",cms);
+				 //logger.debug("I am inside ajax");
+			
+	}
+	
+/*	public ActionForward shilpa(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			 
+		CMSFormBean cmsForm = (CMSFormBean)form;
+		StringBuffer sb = new StringBuffer("");
+		ArrayList addMember = new ArrayList();
+		ArrayList addMember1 = new ArrayList();
+		GenericDAO dao  = new GenericDAO();
+		HttpSession session = request.getSession();
+		int addMemberListSize;
+		
+		session.setAttribute("appOwnerDetList",addMember1);
+		String selectQuery= sb.toString();
+		addMember1 = (ArrayList) dao.getAppOwnerDetail(selectQuery );
+		int i = addMember1.size();
+		System.out.println("Size of addMember in shilpa ********"+i);
+		for( i=0;i<addMember1.size();i++) {
+			String[] strArr = (String[])addMember1.get(i); 
+			CMSBO bo = new CMSBO();
+			System.out.println("str arr"+strArr.toString());
+			bo.setRcbsCode(strArr[3]);
+			//bo.setAcronym(strArr[1]);
+			//bo.setGroup(strArr[2]);				
+			addMember.add(bo);
+			System.out.println("**** inside cmsaction sze of addmember"+bo.getRcbsCode());			
+	  }		
+	  System.out.println("shilpa .........");
+	  return mapping.findForward("shilpa");
+	 }*/
+
+}
+
+

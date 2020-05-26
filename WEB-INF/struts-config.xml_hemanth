@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.1//EN"
+          "http://jakarta.apache.org/struts/dtds/struts-config_1_1.dtd">
+
+<!--
+     This is the Struts configuration file for the example application,
+     using the proposed new syntax.
+-->
+
+<struts-config>
+  <form-beans>
+	<form-bean name="CMSFormBean" 
+   				type="com.qwest.cms.actionForm.CMSFormBean" />
+   	<form-bean name="LogonFormBean" 
+   				type="com.qwest.cms.actionForm.LogonFormBean" />
+	<form-bean name="CMSFunctionForm" 
+   				type="com.qwest.cms.actionForm.CMSFunctionForm" />
+	<form-bean name="CMSToolForm" 
+   				type="com.qwest.cms.actionForm.CMSToolForm" />
+
+  </form-beans>
+  <!-- ========== Global Forward Definitions ============================== -->
+  
+  <global-forwards>
+    <forward   name="logon"    path="/jsp/logon.jsp"/>
+    <forward   name="error"    path="/jsp/error.jsp"/>
+   </global-forwards>
+  
+  <!-- ========== Action Mapping Definitions ============================== -->
+  <action-mappings>
+
+    <!-- add your action tag here one by one -->
+     <action path="/index" forward="/jsp/logon.jsp" />
+     
+     <action path="/logon"
+              type="com.qwest.cms.action.LogonAction"
+              name="LogonFormBean"
+              input="/login.jsp"
+              validate="false"
+              scope="request"  >
+     	<forward name="end_user" path="/CMSAction.do?methodToCall=search" />
+     	<forward name="super_user" path="Tiles.Search" redirect="false" />
+      	<forward name="failure" path="/login.jsp"/>
+     </action>
+     
+     <action path="/login"
+             type="com.qwest.paf.action.LogonSubmit"
+             name="LogonForm"
+             validate="true"
+             scope="request"  >
+     	 <forward name="success" path="/jsp/done_creator.jsp"/>
+     	 <forward name="failure" path="/jsp/lognew.jsp"/>
+     </action>
+     
+	 	
+	<action   path="/Logout"
+              type="com.qwest.cms.action.LogoutAction"
+              name="CMSFormBean"
+              scope="request" 
+              validate="false" >
+              <forward name="success" path="/login.jsp"/>           
+    </action>
+    
+     <action  path="/CMSAction" 
+	   		  type="com.qwest.cms.action.CMSAction" 	   			
+	   		  name="CMSFormBean" 
+	   		  scope="request"
+	   		  validate="false" 
+	   		  parameter="methodToCall">
+	   	  <forward name="home" path="Tiles.Home" redirect="false" />
+	   	   <forward name="getAppInfo" path="Tiles.getAppInfo" redirect="false" />
+	   	  <forward name="searchError" path="Tiles.searchError" redirect="false" />
+	   	  <forward name="getServerDetails" path="Tiles.getServerDetails" redirect="false" />
+	   	  <forward name="report" path="Tiles.report" redirect="false" />
+	   	  <forward name="getNetGrpDetails" path="Tiles.getNetGrpDetails" redirect="false" />
+	   	  <forward name="SearchResults" path="Tiles.SearchResult" redirect="false" />	   	  
+	   	  <forward name="home_mgr" path="Tiles.Home_MGR" redirect="false" />
+	   	  <forward name="susMsg" path="Tiles.Tool.susMsg" redirect="false" />
+	   	  <forward name="mgrAppCrt" path="Tiles.Home_MGR2" redirect="false" />
+	   	  <forward name="search" path="Tiles.Search" redirect="false" /> 
+	   	  <forward name="noCerts" path="Tiles.NoCerts" redirect="false" />
+		<forward name="edit_profile" path="Tiles.edit_profile" redirect="false" />
+		<forward name="checkAuth" path="Tiles.checkAuth" redirect="false" />
+		<forward name="editProfileGroup" path="Tiles.editProfileGroup" redirect="false" />
+		<forward name="editProfGroupNew" path="Tiles.editProfGroupNew" redirect="false" />
+		<forward name="editProfAcronym" path="Tiles.editProfAcronym" redirect="false" />
+		<forward name="editProfGroupCuid" path="Tiles.editProfGroupCuid" redirect="false" />
+		<forward name="editProfCuidInsert" path="Tiles.editProfCuidInsert" redirect="false" />
+		<forward name="editProfMemDelete" path="Tiles.editProfMemDelete" redirect="false" />
+		<forward name="editGroupSave" path="Tiles.editGroupSave" redirect="false" />
+		<forward name="editProfAuthCheck" path="Tiles.editProfAuthCheck" redirect="false" />	
+	   	<forward name="doDownload" path="Tiles.Functions.DownLoad" redirect="false" />
+	   				
+	   </action>
+	       
+	    <action  path="/CMSToolAction" 
+	   		  type="com.qwest.cms.action.CMSToolAction" 	   			
+	   		  name="CMSToolForm" 
+	   		  scope="request"
+	   		  validate="false" 
+	   		  parameter="methodToCall">
+	   	 <forward name="loadSuc" path="Tiles.Tool.loadSuc" redirect="false" /> 
+	   	 <forward name="loadFail" path="Tiles.Tool.loadFail" redirect="false" /> 
+	   	 <forward name="disCrtList" path="Tiles.Tool.disCrtList" redirect="false" /> 
+		  <forward name="tool" path="Tiles.Tool" redirect="false" />  
+	   	  <forward name="reqform" path="Tiles.Tool.reqForm" redirect="false" /> 
+	   	  <forward name="csrform" path="Tiles.Tool.csr" redirect="false" />
+	   	  <forward name="creatCrt" path="Tiles.Tool.creatCrt" redirect="false" />
+	   	  <forward name="susMsg" path="Tiles.Tool.susMsg" redirect="false" />
+	   	  <forward name="crsFromCrt" path="Tiles.Tool.crNcsr" redirect="false" />
+	   	  <forward name="addcert" path="Tiles.Tool.addcert" redirect="false" />
+	   	  <forward name="getattributes" path="Tiles.Tool.getattributes" redirect="false" />
+	   	  <forward name="crstFromCrt" path="Tiles.Tool.crNcsrt" redirect="false" />
+	   	  <forward name="crtformpage" path="Tiles.Tool.crNcsrtForm" redirect="false" />
+	   	  <forward name="dispCsr" path="Tiles.Tool.dispcsr" redirect="false" />
+	   	  <forward name="AutoDisc" path="Tiles.Tool.AutoD" redirect="false" />
+	   	  <forward name="tool2" path="/jsp/tools/tool_creatNewCrt.jsp" redirect="false" />
+	   	  <forward name="dispNewCsr" path="Tiles.Tool.dispNewcsr" redirect="false" />
+	   	  <forward name="dispCrt" path="Tiles.Tool.dispCrt" redirect="false" />	
+	   	  <forward name="checkCert" path="Tiles.Tool.checkCert" redirect="false" />	
+	   	  <forward name="loadAppUser" path="Tiles.Tool.loadAppUser" redirect="false" />
+	   	  <forward name="editProfAuthCheck" path="Tiles.editProfAuthCheck" redirect="false" />
+	   	  <forward name="loadEditCert" path="/jsp/tools/tool_loadDetail.jsp" redirect="false" />	
+	   	  <forward name="loadCrt" path="Tiles.Tool.loadCrt" redirect="false" />	
+	   	  
+	   	   	   	 	   				
+	   </action>
+	    
+	   <action path="/CMSFunctionAction" 
+	   			type="com.qwest.cms.action.CMSFunctionAction" 	   			
+	   			name="CMSFunctionForm" 
+	   			scope="request"
+	   			validate="false" 
+	   			parameter="methodToCall">	   	
+	   		<forward name="home" path="Tiles.Funtions.Home" redirect="false" />		
+	   		<forward name="FMenu" path="Tiles.Functions.FMenu" redirect="false" />
+	   		<forward name="export" path="Tiles.Functions.Export" redirect="false" />
+	   		<forward name="renewCert" path="Tiles.Functions.Renewal" redirect="false" />
+	   		<forward name="generateCSR" path="Tiles.Functions.RenewMail" redirect="false" />
+	   		<forward name="approvalMail" path="Tiles.Functions.SendMail" redirect="false" />
+	   		<forward name="updateCert" path="Tiles.Functions.UpdateCert" redirect="false" />  
+	   		<forward name="updateCertDetails" path="Tiles.Functions.UpdateCertDetails" redirect="false" />  
+	   		<forward name="updatedCert" path="Tiles.Functions.UpdatedCert" redirect="false" />  
+	   		<forward name="transfer" path="Tiles.Functions.Transfer" redirect="false" />
+			<forward name="edit_profile" path="Tiles.edit_profile" redirect="false" />	
+			<forward name="changeCertStatus" path="Tiles.Functions.ChangeStatus" redirect="false" />
+			<forward name="updateCertStatus" path="Tiles.Functions.UpdateCertStatus" redirect="false" />
+			<forward name="editCert" path="Tiles.Functions.EditCert" redirect="false" /> 
+			<forward name="deleteCert" path="Tiles.Functions.DeleteCert" redirect="false" />  
+			<forward name="doDownload" path="Tiles.Functions.DownLoad" redirect="false" />		
+			<forward name="editProfAuthCheck" path="Tiles.editProfAuthCheck" redirect="false" />	
+	
+	   </action>
+	    
+
+   </action-mappings>
+   <message-resources parameter="com.qwest.cms.utils.MessageResources" null="false"/>
+    <plug-in className="org.apache.struts.tiles.TilesPlugin">
+       <!-- Path to XML definition file -->
+       <set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml" />
+       <!-- Set Module-awareness to true -->
+       <set-property property="moduleAware" value="true" />
+	</plug-in>
+	
+	
+</struts-config>

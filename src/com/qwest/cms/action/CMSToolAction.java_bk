@@ -1,0 +1,1162 @@
+/*
+ * Created on Feb 20, 2008
+ *
+ * TODO To change the template for this generated file go to
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
+package com.qwest.cms.action;
+
+
+
+
+import com.qwest.cms.utils.KeyPairType;
+
+import com.qwest.cms.utils.SignatureType;
+import com.qwest.cms.utils.X509CertUtil;
+
+import com.qwest.cms.utils.KeyPairUtil;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyStore;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.security.interfaces.DSAPrivateKey;
+import java.security.interfaces.DSAPublicKey;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.X509EncodedKeySpec;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
+import org.apache.struts.actions.DispatchAction;
+import org.apache.struts.upload.FormFile;
+import org.apache.struts.util.MessageResources;
+import org.bouncycastle.asn1.x509.X509Name;
+import org.bouncycastle.crypto.CryptoException;
+import org.bouncycastle.crypto.tls.Certificate;
+import org.bouncycastle.jce.PKCS10CertificationRequest;
+
+
+import com.qwest.cms.BO.CMSBO;
+import com.qwest.cms.actionForm.CMSFunctionForm;
+import com.qwest.cms.actionForm.CMSToolForm;
+import com.qwest.cms.dao.GenericDAO;
+import com.qwest.cms.dao.ToolsDao;
+import com.qwest.cms.exception.CMSBaseException;
+import com.qwest.cms.utils.*;
+
+
+/**
+ * @author ipatan
+ *
+ * TODO To change the template for this generated type comment go to
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
+public class CMSToolAction extends  DispatchAction {
+	ActionErrors actionErrors = new ActionErrors();	
+    Logger logger = Logger.getLogger(CMSFunctionAction.class);
+    ActionMessages actionMessages = new ActionMessages();
+    
+	public ActionForward autoDisc(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+		      
+			  System.out.println("Auto Disc 1**********");
+			  Process p;
+
+			  try
+			  {
+			      String cmd = CMSProperties.getString("UNTAR_SCRIPT");
+			  p = Runtime.getRuntime().exec(cmd);
+		  p.waitFor();
+			  if(p.exitValue() == 0)
+			  {
+			  System.out.println("CommandSuccessful  "+cmd);
+			  }
+			  else
+			  {
+			  System.out.println("CommandFailure");
+			  } 
+			  }
+			  catch(Exception ex)
+			  {
+			  System.out.println("Exception:"+ex.toString());
+			  }
+
+	    
+			  logger.info("Tools Auto Disc Action **********");			  
+			  return mapping.findForward("AutoDisc");
+			 }
+	
+	public ActionForward checkCert(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			 
+			  System.out.println("Tool Check Cert Action ***********");
+			  logger.info("Tool Check Cert Action ***********");
+			  HttpSession session=request.getSession();
+			  CMSToolForm toolForm = (CMSToolForm)form;			  
+			  CMSToolAction tool = new CMSToolAction();
+			  actionErrors.clear();
+			  tool.dirList(mapping, form, request, response);
+			  
+			  try {
+				  String dirExists = (String)session.getAttribute("dirExists");
+				  System.out.println("value of NO CERT**********"+dirExists);
+				  if ( dirExists.equals("DirNotExists") ){
+					  System.out.println("nocerts in check cert......"+dirExists);
+					  logger.debug("Tools ---> checkCert -- Server Directory does not exist -"+dirExists);	
+					  actionMessages.clear();
+					  actionMessages.add("mess", new ActionMessage("error.toolMess"));
+					  saveMessages(request, actionMessages);
+					  System.out.println("action mess");
+					  return new CMSToolAction().reqform(mapping, form, request, response);
+				  } else if ( dirExists.equals("DirExists") ){
+					  System.out.println("cert dir in check cert........"+dirExists);
+					  logger.debug("Tools ---> checkCert - Server Directory Exists  -"+dirExists);
+					  toolForm.setAppServer(toolForm.getAppServer());
+					  System.out.println("App server name is "+toolForm.getAppServer());
+					  return new CMSToolAction().loadAppUser(mapping, form, request, response);
+					  //return mapping.findForward("loadAppUser");
+				  }
+				  
+				  return mapping.findForward("tool");
+			  } catch (SQLException e) {
+					logger.error("SQL Exception in Tools - Check Cert  "+e.getMessage());
+					actionErrors.add("db error", new ActionError("error.dbError"));
+					saveErrors(request, actionErrors);
+					return mapping.findForward("editProfAuthCheck");
+				}catch (Exception e) {
+					logger.error("Exception in Tools - Check Cert "+e.getMessage());
+					actionErrors.add("error", new ActionError("error.message"));
+					saveErrors(request, actionErrors);
+					return mapping.findForward("editProfAuthCheck");
+				}
+
+	}
+	
+	public void dirList(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) {
+     try{
+     	System.out.println();
+     	actionErrors.clear();
+        HttpSession session=request.getSession();
+        CMSToolForm toolForm = (CMSToolForm)form;
+        boolean fileExists = true;
+        String appServer = null;
+        String cuid=(String)session.getAttribute("login");
+        if ( (cuid == null) || (cuid.equals(null) || (cuid.equals(""))) ){
+			  logger.error("Login Id in Edit Prof is null");
+			  actionErrors.add("errMess", new ActionError("error.message"));
+			  saveErrors(request, actionErrors);			
+		  }
+        String crt_home=CMSProperties.getString("crt_home");
+         
+        System.out.println(" crt_home =="+crt_home+"  cuid ==> "+cuid);
+        appServer = toolForm.getAppServer();
+     	File directory=new File(crt_home);
+     	ArrayList dirList = new ArrayList();
+        if(directory.isDirectory()) {                        
+         	File[] contents = directory.listFiles();
+         	for(int i=0;i<contents.length;i++){
+         			File file=contents[i];
+         			if(file.getName().equalsIgnoreCase((appServer))){
+         				if(file.isDirectory())
+         					dirList.add(file.getName().trim());
+         			}
+         	}
+        }
+         
+		PrintWriter pw=response.getWriter();
+		// int c=Integer.parseInt(fm.getA())*Integer.parseInt(fm.getB());
+		System.out.println("dirList.size() "+dirList.size());
+		logger.debug("Tools ---> dirList -- Server Directory List Size  -"+dirList.size());
+		session.setAttribute("noCerts", null);
+		if(dirList.size()>0){
+			pw.write(dirList.toString());	
+			session.setAttribute("dirExists", "DirExists");				
+		} else {
+		session.setAttribute("dirExists", "DirNotExists");
+		System.out.println(" sending 0");
+		pw.write("0");
+		//actionErrors.add("errMess", new ActionError("error.noCertLoad"));
+		//saveErrors(request, actionErrors);			     
+		fileExists = false;				 
+		if(fileExists == false){			 
+		     session.setAttribute("noCerts", "noCertificates");
+		}else{
+		     session.setAttribute("noCerts", "Certificates");
+		}
+		//return fileExists;
+		}
+		System.out.println("dir contains....."+(String)session.getAttribute("noCerts"));
+		logger.debug("Tools ---> dirList -- Directory contains ........."+(String)session.getAttribute("noCerts"));
+      }catch(Exception ie){
+         System.out.println(" io Exception "+ie.getMessage());
+         logger.debug("Tools ---> dirList-- Exception in File Handling "+ie.getMessage());         
+      }
+      //return true;
+     	
+	}         
+ 
+	public ActionForward loadAppUser(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			 
+			  System.out.println("Tools Load App User Action ***********");
+			  logger.info("Tools Load App User Action ***********");
+			  HttpSession session=request.getSession();
+			  CMSToolForm toolForm = (CMSToolForm)form;	 
+			  actionErrors.clear();
+			  String loginId=(String)session.getAttribute("login");
+			  if ( (loginId == null) || (loginId.equals(null) || (loginId.equals(""))) ){
+				  logger.error("Login Id in Edit Prof is null");
+				  actionErrors.add("errMess", new ActionError("error.message"));
+				  saveErrors(request, actionErrors);				  
+				  return mapping.findForward("editProfAuthCheck");
+			  }
+			  GenericDAO genDao = new GenericDAO();
+			  ArrayList appList = new ArrayList();
+			  ArrayList appsList = new ArrayList();
+			  String[] appUser = null;
+			  ArrayList appUserList = new ArrayList();
+			  ArrayList appsUserList = new ArrayList();
+			  String getAppDetailQuery = "SELECT * from TBL_CMS_APP_MEMBER where MEMBER_CUID = '" +
+			  			loginId.toUpperCase()+"'";
+			  
+			  try {
+				  appList = genDao.getAppMemberDetail(getAppDetailQuery);
+				  System.out.println("App List..... size"+appList.size());
+				  for (int i = 0; i < appList.size(); i++) {
+					  String[] appDetails = (String[]) appList.get(i);
+					  CMSBO cmsBO = new CMSBO();
+					  cmsBO.setAppName(appDetails[0]);
+					  cmsBO.setAcronym(appDetails[1]);
+					  appsList.add(cmsBO);
+					  //System.out.println(appDetails[0]+appDetails[1]);
+				  }			  
+				  System.out.println("Size of apps list"+appsList.size());
+				  CMSBO cmsBO = new CMSBO();
+				  for (int i = 0; i < appsList.size(); i++) {
+					  cmsBO = (CMSBO)appsList.get(i);
+					  //cmsBO = (CMSBO)session.getAttribute("AppList");
+					  appUser = genDao.getAppUserName(cmsBO.getAppName(), cmsBO.getAcronym());
+					  //System.out.println("App User names are ......"+appUser.length );
+					  appUserList.add(appUser);
+					  //System.out.println("App User List is ......."+appUserList.size());
+				  }
+				  Set s=new HashSet();
+				  for (int i = 0; i < appUserList.size(); i++) {
+					  String[] strArr = (String[]) appUserList.get(i);
+					  for (int j = 0; j < strArr.length; j++) {
+						  if(!s.contains(strArr[j])){
+						      //System.out.println(" hi "+strArr[j]);
+						      s.add(strArr[j]);
+						      CMSBO cmsbo = new CMSBO();
+						      cmsbo.setAppUserName(strArr[j]);				  
+						      appsUserList.add(cmsbo);
+						  }
+
+						  //System.out.println("user names are ....."+strArr[j]);
+						  logger.debug("Tools --> Load App User -- The App User Names List Names are ******** "+strArr[j]);
+					  }				  
+				  }				  
+				  System.out.println("Apps User List size is "+appsUserList.size());
+				  logger.debug("Tools --> Load App User -- Apps User List size is "+appsUserList.size());
+				  session.setAttribute("appsUserList", appsUserList);	
+				  return mapping.findForward("loadAppUser");
+			  } catch (SQLException e) {
+					logger.error("SQL Exception in Tools - Load App User  "+e.getMessage());
+					actionErrors.add("db error", new ActionError("error.dbError"));
+					saveErrors(request, actionErrors);
+					return mapping.findForward("editProfAuthCheck");
+				}catch (Exception e) {
+					logger.error("Exception in Tools - Load App User "+e.getMessage());
+					actionErrors.add("error", new ActionError("error.message"));
+					saveErrors(request, actionErrors);
+					return mapping.findForward("editProfAuthCheck");
+				}			  
+			 }
+ 
+	public ActionForward checkAppUserName(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			
+			HttpSession session=request.getSession();
+			System.out.println("Check App User Action *********  ");
+			logger.info("Tools -- Check App User Action *********  ");
+			actionErrors.clear();
+			String cuid=(String)session.getAttribute("login");
+			if ( (cuid == null) || (cuid.equals(null) || (cuid.equals(""))) ){
+				  logger.error("Login Id in Edit Prof is null");
+				  actionErrors.add("errMess", new ActionError("error.message"));
+				  saveErrors(request, actionErrors);				  
+				  return mapping.findForward("editProfAuthCheck");
+			  }
+			CMSToolForm toolForm = (CMSToolForm)form;			
+			String appUserName = toolForm.getAppUserName();			        
+			System.out.println(" Checking app user ......."+appUserName);
+			logger.debug("Tools -- Check App User - Checking app user ......  "+appUserName);
+			session.setAttribute("appUserName", appUserName);			
+			CMSToolAction toolAct = new CMSToolAction();
+			toolAct.certList(mapping, form, request, response);
+			return  new CMSToolAction().disCrtList(mapping, form, request, response);
+	}
+	
+	public ActionForward LoadEditCert(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			
+			HttpSession session=request.getSession();
+			System.out.println("Load Edit Cert Action *********  ");
+			logger.info("Tools -- Load Edit Cert Action *********  ");
+			actionErrors.clear();
+			String path = request.getParameter("path");
+			session.setAttribute("path", path);
+			path = path.substring(path.lastIndexOf('/')+1,path.indexOf('.'));
+			
+			CMSToolForm toolForm = (CMSToolForm)form;	
+			toolForm.setCertName(path);
+			
+			return mapping.findForward("loadEditCert");
+	}
+	
+/*	public ActionForward loadEditPage(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			
+			HttpSession session=request.getSession();
+			System.out.println("Load Edit Page Action *********  ");
+			logger.info("Tools -- Load Edit Page Action *********  ");
+			actionErrors.clear();			
+			
+			CMSToolForm toolForm = (CMSToolForm)form;	
+			//toolForm.setCertName((String)session.getAttribute("path"));
+			System.out.println("Load edit cert .......... path is ---" +(String)session.getAttribute("path"));
+			return mapping.findForward("loadEditPage");
+	}*/
+	
+	public void loadEditSave(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			
+			HttpSession session=request.getSession();
+			System.out.println("Load Edit SAVE Action *********  ");
+			logger.info("Tools -- Load Edit SAVE Action *********  ");
+			actionErrors.clear();
+			String certName = null;
+			String certNickName = null;
+			String appName = null;
+			String hostID = null;
+			String hostIP = null;
+			String certType = null;
+			String loadNotes = null;
+			String path = (String)session.getAttribute("path");
+			CMSToolForm toolForm = (CMSToolForm)form;	
+			certName = toolForm.getCertName();
+			appName = toolForm.getAppName();
+			certNickName = toolForm.getCertNickName();
+			certType = toolForm.getCertType();
+			hostID = toolForm.getHostID();
+			hostIP = toolForm.getHostIP();
+			
+			loadNotes = toolForm.getLoadNotes();
+			
+			HashMap map=(HashMap)session.getAttribute("savemap");
+			ArrayList saveList=new ArrayList();
+			saveList.add(appName);
+			saveList.add(certNickName);
+			saveList.add(certType);
+			saveList.add(hostID);
+			saveList.add(hostIP);
+			saveList.add(loadNotes);
+			path=path.replace('/', '\\');
+			map.put(path,saveList);
+			session.setAttribute("savemap",map);
+			System.out.println("All values in save load -----"+map.size());			
+			
+			//return mapping.findForward("loadEditSave");
+	}
+	
+	public void certList(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response){
+		HttpSession session=request.getSession();
+		actionErrors.clear();
+		String cuid=(String)session.getAttribute("login");
+		if ( (cuid == null) || (cuid.equals(null) || (cuid.equals(""))) ){
+			  logger.error("Login Id in Edit Prof is null");
+			  actionErrors.add("errMess", new ActionError("error.message"));
+			  saveErrors(request, actionErrors);						  
+		  }
+		String crt_home=CMSProperties.getString("crt_home");
+		CMSToolForm toolForm = (CMSToolForm)form;
+		Map map=new LinkedHashMap();
+		boolean fileExists = true;
+		String appUserName = toolForm.getAppUserName();
+		String appServer = toolForm.getAppServer();
+  
+		try{
+			File directory=new File(crt_home+"\\"+appServer);
+			ArrayList dirList = new ArrayList();
+			if(directory.isDirectory()) {                        
+				File[] contents = directory.listFiles();
+				for(int i=0;i<contents.length;i++){
+      			File file=contents[i];
+      			if(file.getName().startsWith(appUserName.toUpperCase())||file.getName().startsWith(appUserName.toLowerCase())){
+      				if(file.isDirectory())
+      					dirList.add(file.getName().trim());
+      				}
+				}
+			}
+			PrintWriter pw=response.getWriter();
+			System.out.println("dirList.size() "+dirList.size());
+			logger.debug("Tools -- Cert List -- Cert Dir list size()is  "+dirList.size());
+			if(dirList.size()>0){
+				pw.write(dirList.toString());	
+				session.setAttribute("appDirExists", "appDirExists");
+				File crtDir=new File(crt_home+"\\"+appServer+"\\"+appUserName);
+				File[] crts = crtDir.listFiles();
+				for(int i=0;i<crts.length;i++){
+					File file=crts[i];                  
+					try{
+						ParseX509Certificate crt=new ParseX509Certificate(file);
+						map.put(file.getPath(), crt);
+					}catch(CertificateException crtExp){
+						System.out.println(" File"+file.getPath()+" is not proper Certficate to parse \n Exp Message: "+crtExp.getMessage());
+						logger.error("Tools -- Cert List -- Exception in Parsing certificate  "+crtExp);
+						/*actionErrors.add("errMess", new ActionError("error.parseCert"));
+						saveErrors(request, actionErrors);*/
+					}
+               
+					System.out.println(" No ot files crt "+map.size());
+					logger.debug("Tools -- Cert List -- No of crt files is "+map.size());
+				 }
+				
+			 } else {
+			 session.setAttribute("appDirExists", "appDirNotExists");
+		     System.out.println(" sending 0");
+		     pw.write("0");
+		     //actionErrors.add("errMess", new ActionError("error.noCertLoad"));
+			 //saveErrors(request, actionErrors);			     
+			 fileExists = false;				 
+			 if(fileExists == false){
+				 System.out.println("file exists is false....");
+				  session.setAttribute("certList", "noCertificates");
+			  }else{
+				  session.setAttribute("certList", "Certificates");
+			  } 	          			 
+		 }
+		 System.out.println("dir contains....."+(String)session.getAttribute("certList"));
+		  //return mapping.findForward("tool2");
+  
+		 }catch(Exception ie){
+			 System.out.println(" io Exception "+ie.getMessage());
+			 logger.error("Tools -- Cert List -- Exception in Cert List "+ie.getMessage());
+		 }
+	}
+ 
+    public ActionForward disCrtList(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response)throws Exception {
+    	
+    	System.out.println("DisCrtList Action **********");
+    	logger.info("Tools -- Display Cert List --");
+    	HashMap map=new HashMap();
+    	HashMap savemap=new HashMap();
+    	ArrayList list=new ArrayList();
+        
+        CMSToolForm toolForm = (CMSToolForm)form;
+        HttpSession session=request.getSession();	
+        actionErrors.clear();
+        ToolsDao dao=new ToolsDao();
+        String appServer = toolForm.getAppServer();
+        String appUserName = toolForm.getAppUserName();
+        String crt_home=CMSProperties.getString("crt_home");
+       
+        try {
+        	File crtDir=new File(crt_home+"\\"+appServer+"\\"+appUserName);
+            System.out.println(" fielr path "+crtDir.getPath()+" "+crtDir.isDirectory());
+            if(crtDir.isDirectory()) { 
+                File[] crts = crtDir.listFiles();
+                for(int i=0;i<crts.length;i++){
+                   	File file=crts[i];  
+                    	try{
+                    		ParseX509Certificate crt=new ParseX509Certificate(file);
+                    		 if(crt.getX509cert()!=null)
+                         		map.put(file.getPath(), crt);
+                         		else{
+                         		    list.add(file.getPath());
+                     		}
+                    		//map.put(file.getPath(), crt);
+                    	}catch(CertificateException crtExp){
+                    		System.out.println(" File"+file.getPath()+" Cannot parse Certficate  \n Exp Message: "+crtExp.getMessage());
+                    		logger.error("Tools -Display Cert List -- Certificate Parse Error  - "+crtExp);
+                    		/*actionErrors.add("errMess", new ActionError("error.parseCert"));
+    						saveErrors(request, actionErrors);*/
+                    	}catch(IOException exp){
+                    		System.out.println(" File"+file.getPath()+" IO EXPN \n Exp Message: "+exp.getMessage());
+                    		logger.error("Tools -Display Cert List -- Cert IOException - "+exp);
+                    	} 
+                    	
+                   	 	System.out.println(" No ot files crt "+map.size());
+                   	 	logger.debug("Tools -Display Cert List -- No of cert files are "+map.size());
+                  }
+                System.out.println(" list.size() == > "+list.size());
+            	if(list.size()>0){
+            	    for(int s=0;s<list.size();s++){
+            	        try{
+            	        String fromId = (String) session.getAttribute("login");
+            	        System.out.println(" fromId == > "+fromId);
+            	       /* if ( (fromId == null) || (fromId.equals(null) || (fromId.equals(""))) ){
+            	         logger.error("Login Id in Edit Prof is null");
+            	         actionErrors.add("errMess", new ActionError("error.message"));
+            	         saveErrors(request, actionErrors);				  
+            	         return mapping.findForward("editProfAuthCheck");
+            	        }*/
+            	       String   toList = fromId;
+            	       String  ccList[] = {};
+            	       String subject =" Not supported By CMS TOOL";
+            	       String message = "\n"+"\n"+"HI "+toList+",\n"+"\n"+"The Attached Certificate could not be managed by CMS TOOL;"+"\n"+"This may be a password protected Certificate. Please create a CR to manage this.";
+            	       String fileAttachment=(String)list.get(s);
+            	       CmsMail cmsMail = new CmsMail();
+            	       cmsMail.sendMessWithAttach(subject, message, fromId, toList, ccList,fileAttachment);
+            	        }catch(Exception e){
+            	            e.printStackTrace();
+            	            System.out.println(" i am in exp "+e.getMessage());
+            	        }
+            	    }
+            	}
+            }
+           
+            String cuid=(String)session.getAttribute("login");
+            if ( (cuid == null) || (cuid.equals(null) || (cuid.equals(""))) ){
+				  logger.error("Login Id in Edit Prof is null");
+				  actionErrors.add("errMess", new ActionError("error.message"));
+				  saveErrors(request, actionErrors);				  
+				  return mapping.findForward("editProfAuthCheck");
+			  }
+            ArrayList appList=dao.getAppList(cuid);         
+            session.setAttribute("map", map);
+            session.setAttribute("tool_appList", appList);
+            session.setAttribute("savemap", savemap);
+          /*  Set  keyset= map.keySet();
+            Iterator ir=keyset.iterator();
+            while(ir.hasNext()){String pathfile=ir.next().toString();
+            ParseX509Certificate crt=(ParseX509Certificate) map.get(pathfile);
+            System.out.println("crritgg -- >"+crt.getNotAfter());
+            }*/
+            if(appList.size()>0){
+            	return mapping.findForward("disCrtList");
+            }else{
+                session.setAttribute("errmsg", "noAppName");
+                return mapping.findForward("loadFail");   
+            }
+        } catch (SQLException e) {
+			logger.error("SQL Exception in Tools - Display Cert List  "+e.getMessage());
+			actionErrors.add("db error", new ActionMessage("error.dbError"));
+			saveErrors(request, actionErrors);
+			return mapping.findForward("editProfAuthCheck");
+		}catch (Exception e) {
+			logger.error("Exception in Tools - Display Cert List "+e.getMessage());
+			actionErrors.add("error", new ActionMessage("error.message"));
+			saveErrors(request, actionErrors);
+			return mapping.findForward("editProfAuthCheck");
+		}	
+        
+   
+    }
+    public ActionForward loadCrt(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws CertificateException, IOException {
+    	//  System.out.println(" in loadCrt "+request.getParameter("checkedValues"));
+    	logger.info("Tools - Load Cert Action ********");
+    	String acronym="";
+    	HttpSession session=request.getSession();
+    	ArrayList appList=new ArrayList();
+    	actionErrors.clear();
+        String[] paths=request.getParameter("checkedValues").split(",");
+        String cuid=((String)session.getAttribute("login")).toUpperCase();
+        if ( (cuid == null) || (cuid.equals(null) || (cuid.equals(""))) ){
+			  logger.error("Login Id in Edit Prof is null");
+			  actionErrors.add("errMess", new ActionError("error.message"));
+			  saveErrors(request, actionErrors);				  
+			  return mapping.findForward("editProfAuthCheck");
+		  }
+        if(session.getAttribute("tool_appList")!=null){
+  		   appList=(ArrayList)session.getAttribute("tool_appList");
+        }
+        try {
+        	System.out.println(" paths == > "+paths.length);
+            ArrayList batchList=new ArrayList();
+            ArrayList batchCrt=new ArrayList();
+          
+            ToolsDao dao=new ToolsDao();
+            HashMap map=(HashMap)session.getAttribute("map");
+            HashMap savemap=(HashMap)session.getAttribute("savemap"); 
+            System.out.println("map size ---" +map.size()+"   savemap size  ---"+savemap.size());
+            Set s=map.keySet();
+            Iterator ir=s.iterator();
+            while(ir.hasNext()){
+                System.out.println(" map ="+ir.next().toString());
+            }
+            Set s1=savemap.keySet();
+            Iterator ir1=s1.iterator();
+            while(ir1.hasNext()){
+                System.out.println(" map 2="+ir1.next().toString());
+            }
+            System.out.println(" "+paths.length);
+            if(paths.length-1!=savemap.size()){
+            	System.out.println("path check.....  "+paths.length);
+            	actionErrors.add("error", new ActionError("error.toolLoad"));
+    			saveErrors(request, actionErrors);
+    			return mapping.findForward("loadCrt");
+            }
+            else {
+            	for(int i=1;i<paths.length;i++){
+                    ParseX509Certificate crt=(ParseX509Certificate)map.get(paths[i]);
+                    System.out.println("LOAD CRT  PATH ____-------  "+paths[i]);
+                    //paths[i]=paths[i].replaceAll("\\", "");
+                    ArrayList list=(ArrayList)savemap.get(paths[i]);
+                    String appName=list.get(0).toString().toUpperCase();
+                    String crt_nname=list.get(1).toString().toUpperCase();
+                    String CrtType=list.get(2).toString().toString().toUpperCase();
+                    String host_id=list.get(3).toString().toString().toUpperCase();
+                    String host_ip=list.get(4).toString();
+                    String note=list.get(5).toString().toUpperCase();
+                     
+                   //String appName=request.getParameter(paths[i]+"AppName").toString().toUpperCase();
+                   for(int j=0;j<appList.size();j++){
+                       com.qwest.cms.BO.CMSBO bo=(com.qwest.cms.BO.CMSBO)appList.get(j);
+                       if(bo.getAppName().equals(appName)){
+                           acronym =bo.getAcronym().toUpperCase();
+                       }
+                   }
+                  // String CrtType=request.getParameter(paths[i]+"CrtType").toString().toUpperCase();
+                   //String crt_nname=request.getParameter(paths[i]+"nname").toString().toUpperCase();
+                  // String host_id=request.getParameter(paths[i]+"hid").toString().toUpperCase();
+                  // String host_ip=request.getParameter(paths[i]+"hip").toString();
+                  // String note=request.getParameter(paths[i]+"note").toString().toUpperCase();
+                   System.out.println(" detials $$$$$ == > "+appName+" "+acronym);
+                    if(!dao.checkRow(crt,appName,acronym,host_id,host_ip)){
+                        batchCrt.add(dao.insertCrtStmt(crt,appName,acronym,host_id,host_ip,cuid,crt_nname,CrtType,note));
+                        if(!dao.checkRow(crt)){
+                            batchList.add(dao.insertStmt(crt,new File(paths[i])));
+                            }
+                    }
+                    //System.out.println("status of = "+state);
+                }
+            	// System.out.println(" calling isert sql for bachlist");
+                boolean state=true;
+                if(batchList.size()>0)
+                state=dao.insertSql(batchList);
+                boolean state1=true;
+                if(batchCrt.size()>0)
+                	state1=dao.insertSql(batchCrt);
+                System.out.println("status of Master = "+state);
+                System.out.println("status of chaild = "+state1);
+                if(state&&state1){
+                    if(batchCrt.size()>0)
+                        session.setAttribute("rows",String.valueOf(batchCrt.size()));
+                    System.out.println("SIZE__________________-----"+batchCrt.size()+"------"+batchList.size());
+                    /*if(batchList.size()>0)
+                        session.setAttribute("rows",String.valueOf(batchList.size()));*/
+                    return mapping.findForward("loadSuc");
+                }else{
+                    return mapping.findForward("loadFail");
+                }
+            }           
+            
+            
+            /*
+            ToolsDao dao=new ToolsDao();
+            System.out.println(" reuest == "+request.getParameter("keySize"));
+           String path="C:/Documents and Settings/ipatan/Desktop/certs";
+           File crtDir=new File(path+"\\"+request.getParameter("keySize"));
+         	//  System.out.println(" crt dir => "+crtDir.getPath());       
+           if(crtDir.isDirectory()) { 
+               File[] crts = crtDir.listFiles();
+               for(int i=0;i<crts.length;i++){
+                  	File file=crts[i];
+                     System.out.println(" file crts == "+file.getPath());   
+                     ParseX509Certificate crt=new ParseX509Certificate(file);
+                     System.out.println(" after creating crt");
+                     boolean state=dao.lode(crt,file);
+                     System.out.println("status of "+file.getName()+" = "+state);
+                  	}
+           }
+            PrintWriter pw=response.getWriter();
+            pw.write("loading");
+            
+            */
+         
+        } catch (Exception e) {
+        	actionErrors.clear();
+        	System.out.println("Exception in Tools - Load Cert "+e.getMessage());
+			logger.error("Exception in Tools - Load Cert "+e.getMessage());
+			actionErrors.add("error", new ActionError("error.loadCert"));
+			saveErrors(request, actionErrors);
+			return mapping.findForward("editProfAuthCheck");
+		}	               
+    }
+        
+  
+    public ActionForward tool(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			 
+			  System.out.println("Tool - Tool Action *********");
+			  HttpSession session=request.getSession();
+			  CMSToolAction toolAction = new CMSToolAction();
+			  boolean noCerts = true;
+			  
+			  //noCerts = toolAction.dirList(mapping, form, request, response);
+			  if(noCerts == false){
+				  session.setAttribute("noCerts", "noCertificates");
+			  }else{
+				  session.setAttribute("noCerts", "Certificates");
+			  }
+			  return mapping.findForward("tool");
+	}
+    
+	public ActionForward reqform(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			
+			logger.info("Tools - Request Form Action *********");
+			HttpSession session=request.getSession();
+			actionErrors.clear();
+			String cuid=(String)session.getAttribute("login");
+			if ( (cuid == null) || (cuid.equals(null) || (cuid.equals(""))) ){
+				  logger.error("Login Id in Edit Prof is null");
+				  actionErrors.add("errMess", new ActionError("error.message"));
+				  saveErrors(request, actionErrors);				  
+				  return mapping.findForward("editProfAuthCheck");
+			  }
+			ArrayList appList=new ToolsDao().getAppList(cuid);         
+			session.setAttribute("tool_appList", appList);       
+			return mapping.findForward("reqform");
+			}
+	
+	
+	public ActionForward csrform(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			 
+			  //System.out.println("creat Pvt key calling");
+			logger.info("Tools - CSR Form Action *********");
+			return mapping.findForward("csrform");
+			}
+	
+	public ActionForward creatCrt(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+			 
+			  System.out.println("creat Pvt key calling");
+			  logger.info("Tools - Create Cert Action *********");
+			  return mapping.findForward("creatCrt");
+			 }
+	
+	public ActionForward sendReq(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+	    	
+		logger.info("Tools - Send Req Action ************");
+		HttpSession session=request.getSession();	
+		CMSToolForm toolForm = (CMSToolForm)form;
+		actionErrors.clear();
+		String cuid = (String)session.getAttribute("login");
+		if ( (cuid == null) || (cuid.equals(null) || (cuid.equals(""))) ){
+			  logger.error("Login Id in Edit Prof is null");
+			  actionErrors.add("errMess", new ActionError("error.message"));
+			  saveErrors(request, actionErrors);				  
+			  return mapping.findForward("editProfAuthCheck");
+		}
+		try {
+			CmsMail cmsMail = new CmsMail();
+		    String toList = null;
+		    String fromList = cuid;
+		    String subject = null;
+		    String message = null;
+		    String ccName = cuid;
+		    String appName = null;
+		    String appServer = null;
+		    String aipCuid = null;
+		    String notes = null;
+		    
+		    appName = toolForm.getAppName();
+		    appServer = toolForm.getAppServer();
+		    aipCuid = toolForm.getAipName();		    
+		    notes = toolForm.getNotes();
+		    toList = aipCuid.toUpperCase();	   
+			String[] cclist = {ccName};
+			subject = CMSProperties.getString("AIP_mail_sub");
+			//message = toolForm.getMailMessage();
+			message = "\n\n" + CMSProperties.getString("AIP_mail_body1") + " - " + appServer + "\n";
+			message = message + "\n\n" + CMSProperties.getString("AIP_mail_body2") + "\n" + CMSProperties.getString("AIP_mail_body3") + "\n" + CMSProperties.getString("AIP_mail_body4") ;
+			message = message + "\n\n"+"NOTES from the Requester: "+notes+"\n\n"+"***This is an autogenerated mail.  Please do not reply. ***" ;
+			String fileAttachment =CMSProperties.getString("Script_path");
+			cmsMail.sendMessWithAttach(subject, message, fromList, toList, cclist,fileAttachment);
+			System.out.println("Sending mail........"+appName +appServer +aipCuid +subject+message);
+			logger.debug("Tools -Send Req - Mail details for Req Form - "+appName +appServer +aipCuid +fromList +toList +cclist +subject +message);
+	/*			 String from=(String)session.getAttribute("login")+"@qwest.com";
+				String to=(String)request.getParameter("aipCuid");
+				// String to="ipatan";
+				 String subject="HI run the script";
+				 String body=" "+(String)request.getParameter("note");
+				 CmsMail cmsMail=new CmsMail();
+				 System.out.println("Before sending mail");
+				 try{
+				cmsMail.sendMessage(subject, body, from, to);
+				 }catch(Exception e){
+				     System.out.println(" i exp "+e.getMessage());
+				     e.printStackTrace();
+				 }
+				  System.out.println("sendReq is calling"+request.getParameter("AppName")+" "+request.getParameter("note"));
+	*/		 return mapping.findForward("susMsg");		
+			}catch (Exception e) {
+			logger.error("Exception in Send Request "+e.getMessage());
+			actionErrors.add("error", new ActionMessage("error.mail"));
+			saveErrors(request, actionErrors);
+			return mapping.findForward("editProfAuthCheck");
+			}
+	    
+	}
+	
+	public ActionForward genKeypair(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+		
+			   logger.info("Tools - Generate Key Pair ***********");
+			   try {
+				   CMSToolForm keyForm=(CMSToolForm)form;
+		           KeyPair keyPair=null;
+				   actionErrors.clear();
+
+				   if(keyForm.getKeyAlg().toString().equals("RSA")){
+					   keyPair= KeyPairUtil.generateKeyPair(KeyPairType.RSA, 1024);
+				   }else if(keyForm.getKeyAlg().toString().equals("DSA")){
+					   //System.out.println(" in DSA");
+				       keyPair= KeyPairUtil.generateKeyPair(KeyPairType.DSA, 1024); 
+				  }
+				  System.out.println("creat Pvt key calling"+keyForm.getKeyAlg()+"  "+keyForm.getKeyName()+"  "+keyForm.getKeySize());
+				  System.out.println(" key pair public key "+keyPair.getPublic()+"\n private key ==>"+keyPair.getPrivate());
+				  HttpSession session=request.getSession();
+				  ArrayList info=new ArrayList();
+				  info.add("'"+keyForm.getKeyName()+"' Key Pair has been Generated Successfully ");
+				  session.setAttribute("info", info);
+				  return mapping.findForward("keyform");
+			    }catch (Exception e) {
+					logger.error("Exception in genKeypair "+e.getMessage());
+					actionErrors.add("error", new ActionError("error.request"));
+					saveErrors(request, actionErrors);
+					return mapping.findForward("editProfAuthCheck");
+			    }	           
+		 }
+	
+	public ActionForward creatCsr(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+	           CMSToolForm csrForm=(CMSToolForm)form;
+	           try {
+	        	   KeyPair keyPair=null;
+		           PKCS10CertificationRequest csr=null;
+		           HttpSession session=request.getSession();
+		           actionErrors.clear();
+		           String cuid=(String)session.getAttribute("login");
+		           if ( (cuid == null) || (cuid.equals(null) || (cuid.equals(""))) ){
+						  logger.error("Login Id in Edit Prof is null");
+						  actionErrors.add("errMess", new ActionError("error.message"));
+						  saveErrors(request, actionErrors);				  
+						  return mapping.findForward("editProfAuthCheck");
+					  }
+		           /// System.out.println("creatNewCsr calling  "+csrForm.getCert_validity());
+		           String temp="E="+csrForm.getEmail()+",C="+csrForm.getCountry()+",ST="+csrForm.getState()+",L="+csrForm.getLocName()+",O="+csrForm.getOrgName()+",OU="+csrForm.getOrgUnit()+",CN="+csrForm.getComName();
+		           X509Name subject = new X509Name(temp);
+		           if(csrForm.getSigAlgorithm().equals("RSA")){
+				   keyPair= KeyPairUtil.generateKeyPair(KeyPairType.RSA, 1024);
+				   csr=new PKCS10CertificationRequest("MD2withRSA", subject, keyPair.getPublic(), null,keyPair.getPrivate());
+		           }
+		           if(csrForm.getSigAlgorithm().equals("DSA")){
+					   keyPair= KeyPairUtil.generateKeyPair(KeyPairType.DSA, 1024);
+					   csr=new PKCS10CertificationRequest("SHA1withDSA", subject, keyPair.getPublic(), null,keyPair.getPrivate());
+			       }			  
+			        //X509Name subject = new X509Name("E=ipatan@qwest.com,C=US,ST=UKP,L=US,O=QWEST,OU=localhost,CN=localhost");
+			       		       
+			        new ExportUtil().exportHeadCsrOnlyPem(csr,cuid);		        
+			        ArrayList tempcsr=new ArrayList();
+			        tempcsr.add(csr);
+					session.setAttribute("tempcsr", tempcsr);
+					//System.out.println(" csr has been created");
+					return mapping.findForward("dispCsr");	          
+	   			}catch (Exception e) {
+	   				logger.error("Exception in Creat Csr "+e.getMessage());
+	   				actionErrors.add("error", new ActionError("error.request"));
+	   				saveErrors(request, actionErrors);
+	   				return mapping.findForward("editProfAuthCheck");
+	   			}
+	}	           
+	
+	public ActionForward creatSSCrt(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+		
+			   logger.info("Tools - Create SS Cert *********");
+	           CMSToolForm csrForm=(CMSToolForm)form;
+	           HttpSession session=request.getSession();
+	           actionErrors.clear();
+	           String cuid=(String)session.getAttribute("login");
+	           if ( (cuid == null) || (cuid.equals(null) || (cuid.equals(""))) ){
+					  logger.error("Login Id in Edit Prof is null");
+					  actionErrors.add("errMess", new ActionError("error.message"));
+					  saveErrors(request, actionErrors);				  
+					  return mapping.findForward("editProfAuthCheck");
+				  }
+	           KeyPair keyPair=null;
+	           KeyFactory rsaKeyFac=null;
+	           X509Certificate crt=null;
+	           try{ 
+				 //System.out.println("creatNewcrt calling  ==>"+csrForm.getCert_validity());
+				// KeyPair keyPair= KeyPairUtil.generateKeyPair(KeyPairType.DSA, 1024);
+			 
+			 
+	        	   if(csrForm.getPubKey()!=null&&csrForm.getPriKey()!=null){
+	        		   byte []pubKeyBit=csrForm.getPubKey().getBytes();
+	        		   byte []priKeyBit=csrForm.getPriKey().getBytes();
+	        		   X509EncodedKeySpec pubkeySpec = new X509EncodedKeySpec(pubKeyBit);
+	        		   X509EncodedKeySpec prikeySpec = new X509EncodedKeySpec(priKeyBit);
+	        		   if(csrForm.getSigAlgorithm().equals("RSA")){
+	        			   rsaKeyFac = KeyFactory.getInstance("RSA");
+	        			   DSAPublicKey pubKey = (DSAPublicKey )rsaKeyFac.generatePublic(pubkeySpec);
+	        			   DSAPrivateKey priKey=(DSAPrivateKey)rsaKeyFac.generatePrivate(prikeySpec);
+	        			   crt=X509CertUtil.generateCert(csrForm.getComName(),csrForm.getOrgUnit(),csrForm.getOrgName(),csrForm.getLocName(),
+	        			   csrForm.getState(),csrForm.getCountry(),csrForm.getEmail(),
+			               Integer.parseInt(csrForm.getCert_validity()),pubKey,priKey,SignatureType.RSA_MD2);
+	        		   }
+	        		   if(csrForm.getSigAlgorithm().equals("DSA")){
+	        			   rsaKeyFac = KeyFactory.getInstance("DSA");
+	        			   RSAPublicKey pubKey = (RSAPublicKey )rsaKeyFac.generatePublic(pubkeySpec);
+	        			   RSAPrivateKey priKey=(RSAPrivateKey)rsaKeyFac.generatePrivate(prikeySpec);
+	        			   crt=X509CertUtil.generateCert(csrForm.getComName(),csrForm.getOrgUnit(),csrForm.getOrgName(),csrForm.getLocName(),
+				           csrForm.getState(),csrForm.getCountry(),csrForm.getEmail(),
+				           Integer.parseInt(csrForm.getCert_validity()),pubKey,priKey,SignatureType.DSA_SHA1);
+	        		   }
+	        	   	   }else if(csrForm.getSigAlgorithm().equals("DSA")){
+	        	   		   keyPair= KeyPairUtil.generateKeyPair(KeyPairType.DSA, 1024);		   
+			 
+	        	   		   //String temp="E="+csrForm.getEmail()+",C="+csrForm.getCountry()+",ST="+csrForm.getState()+",L="+csrForm.getLocName()+",O="+csrForm.getOrgName()+",OU="+csrForm.getOrgUnit()+",CN="+csrForm.getComName();
+	        	   		   //X509Name subject = new X509Name("E=ipatan@qwest.com,C=US,ST=UKP,L=US,O=QWEST,OU=localhost,CN=localhost");
+	        	   		   // X509Name subject = new X509Name(temp);
+			 
+	        	   		   crt=X509CertUtil.generateCert(csrForm.getComName(),csrForm.getOrgUnit(),csrForm.getOrgName(),csrForm.getLocName(),
+	        	   				   csrForm.getState(),csrForm.getCountry(),csrForm.getEmail(),
+	        	   				   Integer.parseInt(csrForm.getCert_validity()),keyPair.getPublic(),keyPair.getPrivate(),SignatureType.DSA_SHA1);
+	        	   		   // X509Certificate crt=X509CertUtil.generateCert("localhost","localhost","QWEST","US",  "UKP","US","ipatan@qwest.com",365,keyPair.getPublic(),keyPair.getPrivate(),            SignatureType.DSA_SHA1);
+	        	   	   }else if(csrForm.getSigAlgorithm().equals("RSA")){
+	        	   		   keyPair= KeyPairUtil.generateKeyPair(KeyPairType.RSA, 1024);
+	        	   		   crt=X509CertUtil.generateCert(csrForm.getComName(),csrForm.getOrgUnit(),csrForm.getOrgName(),csrForm.getLocName(),
+	        	   				   csrForm.getState(),csrForm.getCountry(),csrForm.getEmail(),
+	        	   				   Integer.parseInt(csrForm.getCert_validity()),keyPair.getPublic(),keyPair.getPrivate(),SignatureType.RSA_MD2);
+	        	   	   }
+	        	   		// System.out.println("creatNewcrt calling 2 ==>"+csrForm.getCert_validity());
+	        	   		new ExportUtil().exportHeadCertOnlyPem(crt,cuid);		        
+	        	   		ArrayList tempcrt=new ArrayList();
+	        	   		tempcrt.add(crt);
+	        	   		session.setAttribute("tempcrt", tempcrt);
+	        	   		System.out.println(" csr has been created");
+	        	   		logger.debug("Tools - Create SS Cert - CSR has been created. ");
+	        	   		actionErrors.clear();
+	        	   		return mapping.findForward("dispCrt");
+	           		}catch(CryptoException crtExp){
+	           			System.out.println(" Exception in creatSSCrt "+crtExp.getMessage());
+	           			crtExp.printStackTrace();
+	           			logger.error("Exception in Creat Csr "+crtExp.getMessage());
+		   				actionErrors.add("error", new ActionError("error.request"));
+		   				saveErrors(request, actionErrors);
+		   				return mapping.findForward("editProfAuthCheck");
+	           			//return mapping.findForward("dispCrt");
+	           		}
+	           		catch(Exception ex){
+	        		  System.out.println(" creatSSCrt "+ex.getMessage());
+	        		  ex.printStackTrace();
+	        		  logger.error("Exception in Creat Csr "+ex.getMessage());
+		   			  actionErrors.add("error", new ActionError("error.request"));
+		   			  saveErrors(request, actionErrors);
+		   			  return mapping.findForward("editProfAuthCheck");
+	        		  //return mapping.findForward("dispCrt");
+	           		}
+	           		//  PKCS10CertificationRequest csr=new PKCS10CertificationRequest(csrForm.getSigAlgorithm(), subject, keyPair1.getPublic(), null,keyPair1.getPrivate());
+		        
+	}
+	
+	public ActionForward impPvtKey(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+	      	
+			logger.info("Tools -- Import Private Key **********");
+			CMSToolForm csrForm=(CMSToolForm)form;
+			System.out.println("creat Pvt key calling");
+			return mapping.findForward("impPvtKey");
+	}
+	
+	public ActionForward creatNewCsrFromOld(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+		      
+			 System.out.println("creat Pvt key calling");
+			 logger.info("Tools -- Create New CSR from Old **********");
+			 return mapping.findForward("crsFromCrt");
+	}
+	
+	public ActionForward creatNewCsr(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+		
+		logger.info("Tools -- Create New CSR **********");
+	    try{ 
+	    	CMSToolForm cmsForm=(CMSToolForm)form;
+	    	ParseX509Certificate parsedCrt=null;
+        	actionErrors.clear();
+
+	        if(cmsForm.getCrtfile()!=null){
+	        	FormFile myFile = cmsForm.getCrtfile();
+	        	System.out.println(" file is ss there or not "+myFile+"  "+myFile.getFileName());
+	        	String contentType = myFile.getContentType();
+	        	String fileName    = myFile.getFileName();
+	        	int fileSize       = myFile.getFileSize();
+	        	FileOutputStream fos = null;
+	        	InputStream fin = null;		    
+		    	byte[] fileData    = myFile.getFileData();
+		    	fin = myFile.getInputStream();
+		    	int byteCount = 0;
+		    	String temp=CMSProperties.getString("tempfile");
+		    	File tempFile = new File(temp);
+		    	fos = new FileOutputStream(tempFile);
+		    	while ((byteCount = fin.read(fileData, 0, fileData.length)) > -1){ 
+	            	//use full read() method for GZIPInputStream to be treated correctly
+	                fos.write(fileData, 0, byteCount); 
+	            }
+		    	fos.close();
+		    	// System.out.println("creat Pvt key calling");
+		    	System.out.println("success read tha crt");
+		    	parsedCrt =new ParseX509Certificate(tempFile);
+	        	}else if(
+	        		cmsForm.getCrttest()!=null){
+	        		String crtTxt=cmsForm.getCrttest();
+	        		parsedCrt =new ParseX509Certificate(crtTxt);	             
+	        	}
+	        	logger.debug("Tools -- CreateNew Csr -- Parsing Cert "+parsedCrt);
+	        	System.out.println(" paparsing "+parsedCrt.getSubjectCN());
+	        	System.out.println(" subjet "+parsedCrt.getSubjectDN().toString());
+	        	System.out.println(" subjet 2 "+parsedCrt.getSubjectC());
+	        	KeyPair keyPair=KeyPairUtil.generateKeyPair(KeyPairType.RSA, 1024);
+	        	if(parsedCrt.getSigAlgName().indexOf("RSA")!=-1){
+			  	   keyPair= KeyPairUtil.generateKeyPair(KeyPairType.RSA, 1024);
+	        	}else if(
+	        		parsedCrt.getSigAlgName().indexOf("DSA")!=-1){
+	        		keyPair= KeyPairUtil.generateKeyPair(KeyPairType.DSA, 1024);
+	        	}
+	        	// String temp="E="+csrForm.getEmail()+",C="+csrForm.getCountry()+",ST="+csrForm.getState()+",L="+csrForm.getLocName()+",O="+csrForm.getOrgName()+",OU="+csrForm.getOrgUnit()+",CN="+csrForm.getComName();
+	        	X509Name subject = new X509Name(parsedCrt.getSubjectDN().toString());
+	        	PKCS10CertificationRequest csr=new PKCS10CertificationRequest(parsedCrt.getSigAlgName(), subject, keyPair.getPublic(), null,keyPair.getPrivate());
+	        	HttpSession session=request.getSession();
+	        	String cuid=(String)session.getAttribute("login");
+	        	if ( (cuid == null) || (cuid.equals(null) || (cuid.equals(""))) ){
+					  logger.error("Login Id in Edit Prof is null");
+					  actionErrors.add("errMess", new ActionError("error.message"));
+					  saveErrors(request, actionErrors);				  
+					  return mapping.findForward("editProfAuthCheck");
+				  }
+	        	new ExportUtil().exportHeadCsrOnlyPem(csr,cuid);
+		      
+	        	ArrayList tempNewcsr=new ArrayList();
+	        	tempNewcsr.add(csr);
+				session.setAttribute("tempNewcsr", tempNewcsr);
+				// new ExportUtil().exportHeadCsrOnlyPem(csr,cuid);
+				return mapping.findForward("dispNewCsr");
+	      }catch(CertificateException e){
+		        request.setAttribute("error", "invalid certificate data");
+		        return mapping.findForward("crsFromCrt");
+	      } catch (CMSBaseException e) {
+				logger.error("Exception in CreatNewCsr  "+e.getMessage());
+				actionErrors.add("db error", new ActionError("error.dbError"));
+				saveErrors(request, actionErrors);
+				return mapping.findForward("editProfAuthCheck");
+			}catch (Exception e) {
+				logger.error("Exception in CreatNewCsr "+e.getMessage());
+				actionErrors.add("error", new ActionError(e.getMessage()));
+				saveErrors(request, actionErrors);
+				return mapping.findForward("editProfAuthCheck");
+			}
+	}
+	
+
+	public ActionForward getPubKey(ActionMapping mapping, 
+			   ActionForm form, HttpServletRequest request, 
+			   HttpServletResponse response) throws Exception {
+		
+		 logger.info("Tools -- Get Public Key **********");
+	     System.out.println(" before calling object of bean");
+	     HttpSession session=request.getSession();
+	     CMSToolForm bean=(CMSToolForm)form;
+	     System.out.println("view pub Key calling  "+bean.getPubKeyCrtPath());
+	     String path=bean.getPubKeyCrtPath();
+/*//	 if(path.indexOf("\\")!=-1)
+//			  path.replaceAll("\\", "/");
+//			  System.out.println(" the exact path ==> "+path);
+			  File filename=new File("C:/RMS/certsample/adfad.cer");
+			//File filename=bean.getPubKeyCrt();
+			  System.out.println(" file name ==> "+filename.getName());
+			  FileInputStream fis = new FileInputStream(filename);
+			  BufferedInputStream bis = new BufferedInputStream(fis);
+
+			  CertificateFactory cf = CertificateFactory.getInstance("X.509");
+			  //String pubKey = null;
+			  while (bis.available() > 0) {
+			      X509Certificate cert = (X509Certificate) cf.generateCertificate(bis);
+			      System.out.println(" publi key ==> "+cert.getPublicKey());
+			      ArrayList al=new ArrayList();
+			      al.add(cert.getPublicKey());
+                  session.setAttribute("pubKey", al);
+			  }*/
+			  // String pubkey= CertInfo.getPubKey(path);
+			  String pubkey= new ParseX509Certificate(path).getPublicKey();
+			  
+			 ArrayList al=new ArrayList();
+			 al.add(pubkey);
+			 session.setAttribute("al", al);
+			 System.out.println(" in action pubkey ="+pubkey);
+			 logger.debug("Tools -- Get Pub Key - Pub Key is "+pubkey);
+			 return mapping.findForward("viewPubKey");
+		}
+	
+		
+	
+	
+}

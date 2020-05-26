@@ -1,0 +1,48 @@
+
+<html>
+<head>
+<title>Tool_loadSuc</title>
+</head>
+<body>
+	<table border="0" align="center" cellpadding="0" cellspacing="0" width="40%"  bgcolor="336699">
+	<tr>
+		<td align="center" valign="top" ><b><font size="4" color="FFFFFF">Load Status</font><b/> 
+		  
+		</td> 
+    </tr>
+ 	</table><br>
+	<tr><td>&nbsp</td><td>&nbsp</td></tr>
+	<tr><td>&nbsp</td><td>&nbsp</td></tr>
+	<tr></tr>
+
+	<div style="width:850px; height:10px" >
+	<table  width ="70%" cellspacing="2" cellpadding="0" border="1" bordercolor="336699">
+	<%if(session.getAttribute("faildlist")==null){System.out.println("faildlist is null");%>
+	<tr>  
+	<td align="center" width="590px" > <font size="4" color="red" ><%=session.getAttribute("rows")%></font>&nbsp;&nbsp;
+		<% if( session.getAttribute("rows").equals("1")){
+		%>
+			<b><font size='2' color='336699'>Certificate has been loaded Successfully to your Account. </font></b></td>
+		<% }
+			else{
+		%>
+			<b><font size='2' color='336699'>Certificates have been loaded Successfully to your Account. </font></b></td>
+		<% }
+		   session.removeAttribute("rows");
+		%>
+
+	</tr>
+	<%}else{System.out.println("faildlist is not null");
+	 java.util.ArrayList list=(java.util.ArrayList)session.getAttribute("faildlist");
+	 if(list.size()>0){%><tr><th>No files has been loaded in your acount</th></tr>
+	 <%}else{
+	 %><tr><th>Following Files has been loaded already in your acount</th></tr>
+	<% for(int i=0;i<list.size();i++){%>
+	 <tr><td><%=list.get(i)%></td></tr>
+	<%}}}%>
+	</table><br>
+<table><tr><td> &nbsp;
+<a href="<%=request.getContextPath()%>/CMSToolAction.do?methodToCall=autoDisc"><b><u>Click here to Go Back</u></b></a>  </td></tr>   
+</table>
+</body>
+</html>

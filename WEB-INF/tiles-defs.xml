@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+"-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+"http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+
+<tiles-definitions>
+
+<definition name="Tiles.Home_MGR2" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menu_mgr.jsp" />
+   		<put name="body" value="/jsp/common/home_mgr_AppCrt.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+
+<definition name="Tiles.Home_MGR" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menu_mgr.jsp" />
+   		<put name="body" value="/jsp/common/home_mgr.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+	<definition name="Tiles.Home" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/home.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     	<definition name="Tiles.searchError" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/searchError.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     <definition name="Tiles.Search" page="/jsp/common/template.jsp">
+          	<put name="title" type="string" value="example" />
+          	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+        		<put name="header" value="/jsp/common/Header.jsp" />
+        		<put name="menu" value="/jsp/common/menuBar.jsp" />
+        		<put name="body" value="/jsp/common/search.jsp" />
+        		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+       <definition name="Tiles.report" page="/jsp/common/template.jsp">
+          	<put name="title" type="string" value="example" />
+          	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+        		<put name="header" value="/jsp/common/Header.jsp" />
+        		<put name="menu" value="/jsp/common/menuBar.jsp" />
+        		<put name="body" value="/jsp/common/report.jsp" />
+        		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+          <definition name="Tiles.Status" page="/jsp/common/template.jsp">
+          	<put name="title" type="string" value="example" />
+          	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+        		<put name="header" value="/jsp/common/Header.jsp" />
+        		<put name="menu" value="/jsp/common/menuBar.jsp" />        		
+        		<put name="body" value="/jsp/common/res.jsp" />
+        		<put name="body" value="/jsp/common/home.jsp" />
+        		<put name="body" value="/jsp/common/Status.jsp" />
+        		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     <definition name="Tiles.Tool" page="/jsp/tools/template_tool.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="tool_menu" value="/jsp/tools/tool_menu.jsp" />
+   		<put name="body" value="/jsp/tools/tool_home.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+        
+        <definition name="Tiles.Tool.reqForm" page="/jsp/tools/template_tool.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="tool_menu" value="/jsp/tools/tool_menu.jsp" />
+   		<put name="body" value="/jsp/tools/tool_serReqForm.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />   
+    </definition>
+    
+        <definition name="Tiles.Tool.csr" page="/jsp/tools/template_tool.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="tool_menu" value="/jsp/tools/tool_menu.jsp" />
+   		<put name="body" value="/jsp/tools/tool_creatCsr.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />         
+     </definition>
+		<definition name="Tiles.Tool.creatCrt" page="/jsp/tools/template_tool.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="tool_menu" value="/jsp/tools/tool_menu.jsp" />
+   		<put name="body" value="/jsp/tools/tool_creatCrt.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />         
+     </definition>
+     <definition name="Tiles.Tool.susMsg" page="/jsp/tools/template_tool.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="tool_menu" value="/jsp/tools/tool_menu.jsp" />
+   		<put name="body" value="/jsp/tools/tool_susMsg.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />         
+     </definition>
+     <definition name="Tiles.Tool.crNcsr" page="/jsp/tools/template_tool.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="tool_menu" value="/jsp/tools/tool_menu.jsp" />
+   		<put name="body" value="/jsp/tools/tool_creatNewCrt.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />         
+     </definition>
+     
+        <definition name="Tiles.Tool.addcert" page="/jsp/tools/template_tool.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="tool_menu" value="/jsp/tools/tool_menu.jsp" />
+   		<put name="body" value="/jsp/tools/addcerttoacc.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />         
+     </definition>
+     
+     
+     <definition name="Tiles.Tool.loadCerts" page="/jsp/tools/template_tool.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="tool_menu" value="/jsp/tools/tool_menu.jsp" />
+   		<put name="body" value="/jsp/tools/loadCertFromExcel.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />         
+     </definition>
+     
+   
+      <definition name="Tiles.msCertsHome" page="/jsp/common/template.jsp">
+          	<put name="title" type="string" value="example" />
+          	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+        	<put name="header" value="/jsp/common/Header.jsp" />
+        	<put name="menu" value="/jsp/common/menuBar.jsp" />
+        	<put name="body" value="/jsp/common/msCertsHome.jsp" />
+        	<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+          
+      <definition name="Tiles.certUserDetails" page="/jsp/common/template.jsp">
+          	<put name="title" type="string" value="example" />
+          	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+        	<put name="header" value="/jsp/common/Header.jsp" />
+        	<put name="menu" value="/jsp/common/menuBar.jsp" />
+        	<put name="body" value="/jsp/common/certUserDetails.jsp" />
+        	<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     
+     <definition name="Tiles.msCertsInvalidNetpin" page="/jsp/common/template.jsp">
+          	<put name="title" type="string" value="example" />
+          	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+        	<put name="header" value="/jsp/common/Header.jsp" />
+        	<put name="menu" value="/jsp/common/menuBar.jsp" />
+        	<put name="body" value="/jsp/common/msCertsInvalidNetpin.jsp" />
+        	<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+        
+        
+     <definition name="Tiles.popUpFilter" page="/jsp/common/template.jsp">
+          	<put name="title" type="string" value="example" />
+          	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+        	<put name="header" value="/jsp/common/Header.jsp" />
+        	<put name="menu" value="/jsp/common/menuBar.jsp" />
+        	<put name="body" value="/jsp/common/popUpFilter.jsp" />
+        	<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     
+     <definition name="Tiles.msCertsError" page="/jsp/common/template.jsp">
+          	<put name="title" type="string" value="example" />
+          	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+        	<put name="header" value="/jsp/common/Header.jsp" />
+        	<put name="menu" value="/jsp/common/menuBar.jsp" />
+        	<put name="body" value="/jsp/common/msCertsError.jsp" />
+        	<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+         
+     <definition name="Tiles.sessionExpire" page="/jsp/common/template.jsp">
+          	<put name="title" type="string" value="example" />
+          	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+        	<put name="header" value="/jsp/common/Header.jsp" />
+        	<put name="menu" value="/jsp/common/menuBar.jsp" />
+        	<put name="body" value="/jsp/common/sessionExpire.jsp" />
+        	<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>      
+                 
+               
+    <definition name="Tiles.Tool.getattributes" page="/jsp/tools/template_tool.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="tool_menu" value="/jsp/tools/tool_menu.jsp" />
+   		<put name="body" value="/jsp/tools/getAttributes.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />         
+     </definition>
+
+     <definition name="Tiles.Tool.crNcsrt" page="/jsp/tools/template_tool.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="tool_menu" value="/jsp/tools/tool_menu.jsp" />
+   		<put name="body" value="/jsp/tools/tool_creatModelCsrt.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />         
+     </definition>
+     <definition name="Tiles.Tool.crNcsrtForm" page="/jsp/tools/template_tool.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="tool_menu" value="/jsp/tools/tool_menu.jsp" />
+   		<put name="body" value="/jsp/tools/tool_creatCsrtForm.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />         
+     </definition>
+     <definition name="Tiles.Tool.dispNewcsr" page="/jsp/tools/template_tool.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="tool_menu" value="/jsp/tools/tool_menu.jsp" />
+   		<put name="body" value="/jsp/tools/tool_disNewCsr.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />         
+     </definition>
+     <definition name="Tiles.Tool.dispcsr" page="/jsp/tools/template_tool.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="tool_menu" value="/jsp/tools/tool_menu.jsp" />
+   		<put name="body" value="/jsp/tools/tool_disCsr.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />         
+     </definition>
+     <definition name="Tiles.Tool.dispCrt" page="/jsp/tools/template_tool.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="tool_menu" value="/jsp/tools/tool_menu.jsp" />
+   		<put name="body" value="/jsp/tools/tool_disSSCrt.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />         
+     </definition>
+     
+     <definition name="Tiles.Tool.AutoD" page="/jsp/tools/template_tool.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="tool_menu" value="/jsp/tools/tool_menu.jsp" />
+   		<put name="body" value="/jsp/tools/tool_autoDisc.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />         
+     </definition>
+     
+     <definition name="Tiles.Tool.disCrtList" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />   		
+   		<put name="body" value="/jsp/tools/tool_disCrtList.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />         
+     </definition>
+     
+     <definition name="Tiles.Tool.checkCert" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />   		
+   		<put name="body" value="/jsp/tools/tool_serReqForm.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />         
+     </definition>  
+     
+     <definition name="Tiles.Tool.loadAppUser" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />   		
+   		<put name="body" value="/jsp/tools/tool_loadApp.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />         
+     </definition>    
+     <definition name="Tiles.Tool.loadCrt" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />   		
+   		<put name="body" value="/jsp/tools/tool_disCrtList.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />         
+     </definition>       
+     
+     <definition name="Tiles.Tool.loadSuc" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/tools/loaded.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     
+      <definition name="Tiles.Tool.toolError" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/tools/toolsError.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     
+     <definition name="Tiles.Tool.loadFail" page="/jsp/tools/template_tool.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="tool_menu" value="/jsp/tools/tool_menu.jsp" />
+   		<put name="body" value="/jsp/tools/loadFail.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     
+     
+     <definition name="Tiles.Funtions.Home" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/home.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+   <definition name="Tiles.Functions.FMenu" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/functions/Functions_Menu.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     
+      <definition name="Tiles.Functions.Export" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/functions/Functions_Export.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     <definition name="Tiles.Functions.Renewal" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/functions/Functions_Renewal.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     <definition name="Tiles.Functions.RenewMail" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/functions/Functions_RenewalMail.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     <definition name="Tiles.Functions.SendMail" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/functions/Functions_SendMail.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     
+     <definition name="Tiles.Functions.UpdateCert" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/functions/Functions_UpdateCert.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+      <definition name="Tiles.Functions.UpdateCertDetails" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/home.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+         <definition name="Tiles.Functions.UpdatedCert" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/functions/Functions_UpdateMsg.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     <definition name="Tiles.Functions.ChangeStatus" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/functions/Functions_Change_Status.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     <definition name="Tiles.Functions.UpdateCertStatus" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/home.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     <definition name="Tiles.Functions.EditCert" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/functions/Functions_Edit.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     <definition name="Tiles.Functions.DeleteCert" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/functions/Functions_Delete.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     
+      <definition name="Tiles.Functions.addCertToAcct" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/functions/Functions_AddCertToAccount.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+         
+	<definition name="Tiles.edit_profile" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/Edit_Profile.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+    
+     
+     <definition name="Tiles.editProfileGroup" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/Edit_profGroupEdit.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     
+     <definition name="Tiles.checkAuth" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/NoAuthError.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     
+          
+     <definition name="Tiles.editProfGroupNew" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/Edit_profile_menu.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     
+     <definition name="Tiles.editProfAcronym" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/Edit_profile_menu.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     <definition name="Tiles.editProfGroupCuid" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/EditCuid.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     
+     <definition name="Tiles.editProfCuidInsert" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+    	<put name="styles" value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/Edit_profGroupEdit.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     
+     <definition name="Tiles.editProfMemDelete" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+    	<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/Edit_profGroupEdit.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     
+     <definition name="Tiles.editGroupSave" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/Edit_profGroupEdit.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     
+     <definition name="Tiles.editProfAuthCheck" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/NoAuthError.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>     
+      
+      <definition name="Tiles.Functions.DownLoad" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/functions/Funtions_download.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     
+     <definition name="Tiles.SearchResult" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/SearchResult.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     
+      <definition name="Tiles.getServerDetails" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/GetServerDetails.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     <definition name="Tiles.getNetGrpDetails" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/getNetGrpDetails.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+     
+       <definition name="Tiles.getAppInfo" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/GetAppInfo.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+
+ 	<definition name="Tiles.NoCerts" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/noCerts.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+
+	<definition name=" Tiles.noCertsForStatus" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 	value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/noCertsForStatus.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+  
+	 <definition name="Tiles.Rlink" page="/jsp/common/template.jsp">
+     	<put name="title" type="string" value="example" />
+     	<put name="styles" 		value="/jsp/common/CmsViewerStyles.jsp" />
+   		<put name="header" value="/jsp/common/Header.jsp" />
+   		<put name="menu" value="/jsp/common/menuBar.jsp" />
+   		<put name="body" value="/jsp/common/Rlink.jsp" />
+   		<put name="footer" value="/jsp/common/Footer.jsp" />           
+     </definition>
+	
+
+</tiles-definitions>
